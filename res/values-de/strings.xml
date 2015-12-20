@@ -89,9 +89,16 @@
   <string name="scheduler_mode_title">Zeitplaner-Modus</string>
   <string name="scheduler_smart">Intelligent</string>
   <string name="scheduler_daily">Täglich</string>
+  <string name="scheduler_weekly">Wöchentlich</string>
+  <string name="scheduler_daily_time">Uhrzeit</string>
+  <string name="scheduler_week_day">Tag</string>
   <string name="networks_title">Netzwerke</string>
   <string name="networks_message">Herunterladen nur über Netzwerk-Typen</string>
   <string name="category_flashing">Aufspielen</string>
   <string name="secure_mode_title">Sicherer Modus</string>
   <string name="state_error_connection">Keine Datenverbindung.</string>
+  <string name="category_admin">Wartung</string>
+  <string name="clear_files_title">Aktualisierungsdateien säubern</string>
+  <string name="clear_files_summary">Bestehende Aktualisierungsdateien löschen um das Herunterladen einer vollständigen Aktualisierung zu erzwingen</string>
+  <string name="clean_files_feedback" formatted="false">%d Dateien gelöscht. Jetzt \"Nach Aktualisierungen suchen\" drücken</string>
 </resources>
