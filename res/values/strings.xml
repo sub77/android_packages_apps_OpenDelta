@@ -2,7 +2,7 @@
 <resources>
 
 	<string name="app_name">OpenDelta</string>
-	<string name="title">System updates</string>
+	<string name="title">Open Delta</string>
 	<string name="action_networks">Networks</string>
 	<string name="title_networks">Auto download networks</string>
 	<string name="network_2g">2G</string>
@@ -16,7 +16,7 @@
 <![CDATA[
         Copyright &copy; _COPYRIGHT_OPENDELTA_ <b>Jorrit \'Chainfire\' Jongma</b><br>
         <br>
-        Originally created for <b>The OmniROM Project</b><br>
+        Adapted for use in <b>Exodus Android</b><br>
         <br>
         Licensed under the terms of the <b>GNU General Public License, version 3.0 (GPLv3)</b><br>
         <br>

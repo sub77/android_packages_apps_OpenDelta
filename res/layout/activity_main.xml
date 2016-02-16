@@ -4,6 +4,7 @@
 	android:layout_height="match_parent"
 	android:orientation="vertical"
 	android:paddingBottom="@dimen/activity_vertical_margin"
+	android:background="@drawable/background"
 	tools:context=".MainActivity" >
 
 	<LinearLayout
@@ -14,7 +15,6 @@
 		<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="60dp"
-			android:background="@color/title_text_bg"
 			android:orientation="horizontal" >
 
 			<TextView
@@ -27,7 +27,7 @@
 				android:layout_weight="1"
 				android:gravity="start"
 				android:textAppearance="@android:style/TextAppearance.Material.Large"
-				android:textColor="@color/title_text_color" />
+                android:textColor="@android:color/black" />
 
 			<ImageView
 				android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
 				android:layout_marginEnd="@dimen/activity_horizontal_margin"
 				android:layout_marginStart="@dimen/activity_horizontal_margin"
 				android:gravity="end"
-				android:src="@drawable/omnirom_logo" >
+				android:src="@drawable/ic_launcher" >
 			</ImageView>
 		</LinearLayout>
 
@@ -54,12 +54,14 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_current_version_header_title"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_current_version"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -68,12 +70,14 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_last_checked_header_title"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_last_checked"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -82,12 +86,14 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_update_version_title"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_update_version"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -96,12 +102,14 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_download_size_header_title"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_download_size"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 		</LinearLayout>
 
@@ -162,6 +170,7 @@
 				android:layout_marginEnd="@dimen/activity_horizontal_margin"
 				android:layout_marginStart="@dimen/activity_horizontal_margin"
 				android:layout_marginTop="8dp"
+                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 		</LinearLayout>
 	</LinearLayout>
@@ -193,7 +202,7 @@
 			android:paddingRight="16dp"
 			android:text="@string/button_check_now"
 			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
+			android:textColor="@color/primary_color_dark" />
 
 		<Button
 			android:id="@+id/button_build_delta"
@@ -205,7 +214,7 @@
 			android:paddingRight="16dp"
 			android:text="@string/button_build_delta"
 			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
+			android:textColor="@color/primary_color_dark" />
 
 		<Button
 			android:id="@+id/button_flash_now"
@@ -217,7 +226,7 @@
 			android:paddingRight="16dp"
 			android:text="@string/button_flash_now"
 			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
+			android:textColor="@color/primary_color_dark" />
 	</LinearLayout>
 
 </LinearLayout>

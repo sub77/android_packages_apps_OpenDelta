@@ -37,10 +37,10 @@
 				-->
 				<action android:name="android.settings.SYSTEM_UPDATE_SETTINGS" />
 				<!-- Show in launcher for debugging purposed -->
-				<!--
+
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
-				-->
+
 			</intent-filter>
 		</activity>
 		<activity
