@@ -26,8 +26,7 @@
 				android:layout_marginStart="@dimen/activity_horizontal_margin"
 				android:layout_weight="1"
 				android:gravity="start"
-				android:textAppearance="@android:style/TextAppearance.Material.Large"
-                android:textColor="@android:color/black" />
+				android:textAppearance="@android:style/TextAppearance.Material.Large"/>
 
 			<ImageView
 				android:layout_width="wrap_content"
@@ -54,14 +53,12 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_current_version_header_title"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_current_version"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -70,14 +67,12 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_last_checked_header_title"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_last_checked"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -86,14 +81,12 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_update_version_title"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_update_version"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 
 			<TextView
@@ -102,14 +95,12 @@
 				android:layout_height="wrap_content"
 				android:layout_marginTop="8dp"
 				android:text="@string/text_download_size_header_title"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
 
 			<TextView
 				android:id="@+id/text_download_size"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 		</LinearLayout>
 
@@ -170,7 +161,6 @@
 				android:layout_marginEnd="@dimen/activity_horizontal_margin"
 				android:layout_marginStart="@dimen/activity_horizontal_margin"
 				android:layout_marginTop="8dp"
-                android:textColor="@android:color/black"
 				android:textAppearance="@android:style/TextAppearance.Material.Small" />
 		</LinearLayout>
 	</LinearLayout>
