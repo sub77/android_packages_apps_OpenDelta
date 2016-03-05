@@ -81,9 +81,16 @@ import eu.chainfire.opendelta.NetworkState.OnNetworkStateListener;
 import eu.chainfire.opendelta.Scheduler.OnWantUpdateCheckListener;
 import eu.chainfire.opendelta.ScreenState.OnScreenStateListener;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import java.net.HttpURLConnection;
+
 public class UpdateService extends Service implements OnNetworkStateListener,
 OnBatteryStateListener, OnScreenStateListener,
 OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
+    private static final int HTTP_READ_TIMEOUT = 30000;
     private static final int HTTP_SOCKET_TIMEOUT = 30000;
     private static final int HTTP_CONNECTION_TIMEOUT = 30000;
 
@@ -542,65 +549,96 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
     private byte[] downloadUrlMemory(String url) {
         Logger.d("download: %s", url);
+
+        HttpURLConnection urlConnection = null;
         try {
-            HttpParams params = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(params, HTTP_CONNECTION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(params, HTTP_SOCKET_TIMEOUT);
-            HttpClient client = new DefaultHttpClient(params);
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            int code = response.getStatusLine().getStatusCode();
-            if (code != HttpStatus.SC_OK) {
-                Logger.d("response: %d", code);
+            urlConnection = setupHttpRequest(url);
+            if(urlConnection == null) {
                 return null;
             }
-            int len = (int) response.getEntity().getContentLength();
+
+            int len = urlConnection.getContentLength();
             if ((len >= 0) && (len < 1024 * 1024)) {
-                byte[] ret = new byte[len];
-                InputStream in = response.getEntity().getContent();
-                int pos = 0;
-                while (pos < len) {
-                    int r = in.read(ret, pos, len - pos);
-                    pos += r;
-                    if (r <= 0)
-                        return null;
+                InputStream is = urlConnection.getInputStream();
+                int byteInt;
+                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+
+                while((byteInt = is.read()) >= 0){
+                    byteArray.write(byteInt);
                 }
-                return ret;
+
+                return byteArray.toByteArray();
             }
             return null;
         } catch (Exception e) {
             // Download failed for any number of reasons, timeouts, connection
             // drops, etc. Just log it in debugging mode.
             Logger.ex(e);
+            return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+    }
+
+    private HttpURLConnection setupHttpRequest(String urlStr){
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
+            urlConnection.setReadTimeout(HTTP_SOCKET_TIMEOUT);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+            int code = urlConnection.getResponseCode();
+            if (code != HttpURLConnection.HTTP_OK) {
+                Logger.d("response: %d", code);
+                return null;
+            }
+            return urlConnection;
+        } catch (Exception e) {
+            Logger.i("Failed to connect to server" + e.getMessage());
             return null;
         }
     }
 
     private String downloadUrlMemoryAsString(String url) {
         Logger.d("download: %s", url);
+
+        HttpURLConnection urlConnection = null;
         try {
-            HttpParams params = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(params, HTTP_CONNECTION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(params, HTTP_SOCKET_TIMEOUT);
-            HttpClient client = new DefaultHttpClient(params);
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            int code = response.getStatusLine().getStatusCode();
-            if (code != HttpStatus.SC_OK) {
-                Logger.d("response: %d", code);
+            urlConnection = setupHttpRequest(url);
+            if(urlConnection == null){
                 return null;
             }
-            String responseBody = EntityUtils.toString(response.getEntity(),
-                    HTTP.UTF_8);
+
+            InputStream is = urlConnection.getInputStream();
+            ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+            int byteInt;
+            
+            while((byteInt = is.read()) >= 0){
+                byteArray.write(byteInt);
+            }
+            
+            byte[] bytes = byteArray.toByteArray();
+            if(bytes == null){
+                return null;
+            }
+            String responseBody = new String(bytes, StandardCharsets.UTF_8);
+            
             return responseBody;
-        } catch (UnknownHostException e) {
-            Logger.i("Failed to connect to download server");
-            return null;
         } catch (Exception e) {
             // Download failed for any number of reasons, timeouts, connection
             // drops, etc. Just log it in debugging mode.
             Logger.ex(e);
             return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
     }
 
@@ -796,26 +834,26 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     private long getUrlDownloadSize(String url) {
         Logger.d("getUrlDownloadSize: %s", url);
 
+        HttpURLConnection urlConnection = null;
         try {
-            HttpParams params = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(params, HTTP_CONNECTION_TIMEOUT);
-            HttpConnectionParams.setSoTimeout(params, HTTP_SOCKET_TIMEOUT);
-            HttpClient client = new DefaultHttpClient(params);
-            HttpGet request = new HttpGet(url);
-            HttpResponse response = client.execute(request);
-            int code = response.getStatusLine().getStatusCode();
-            if (code != HttpStatus.SC_OK) {
-                Logger.d("response: %d", code);
+            urlConnection = setupHttpRequest(url);
+            if(urlConnection == null){
                 return 0;
             }
-            return response.getEntity().getContentLength();
+
+            return urlConnection.getContentLength();
         } catch (Exception e) {
             // Download failed for any number of reasons, timeouts, connection
             // drops, etc. Just log it in debugging mode.
             Logger.ex(e);
+            return 0;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
         }
-        return 0;
     }
+
 
     private String getNewestFullBuild() {
         Logger.d("Checking for latest full build");
@@ -1342,7 +1380,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     private boolean checkFullBuildMd5Sum(String url, String fn) {
-        String md5Url = url + ".md5sum";
+        String md5Url = url + ".md5";
         String latestFullMd5 = downloadUrlMemoryAsString(md5Url);
         if (latestFullMd5 != null){
             try {
@@ -1608,7 +1646,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     private String getLatestFullMd5Sum(String latestFullFetch) {
-        String md5Url = latestFullFetch + ".md5sum";
+        String md5Url = latestFullFetch + ".md5";
         String latestFullMd5 = downloadUrlMemoryAsString(md5Url);
         if (latestFullMd5 != null){
             try {
