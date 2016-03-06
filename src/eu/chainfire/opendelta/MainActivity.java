@@ -1,6 +1,7 @@
 /* 
  * Copyright (C) 2013-2014 Jorrit "Chainfire" Jongma
  * Copyright (C) 2013-2015 The OmniROM Project
+ * Copyright (C) 2015-2016 The ExodusAndroid Project
  */
 /* 
  * This file is part of OpenDelta.
@@ -120,7 +121,7 @@ public class MainActivity extends Activity {
         String xdelta = (thisYear == 1997) ? "1997" : "1997-"
                 + String.valueOf(thisYear);
 
-        AlertDialog dialog = (new AlertDialog.Builder(this))
+        AlertDialog dialog = (new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert))
                 .setTitle(R.string.app_name)
                 .setMessage(
                         Html.fromHtml(getString(R.string.about_content)
