@@ -7,12 +7,9 @@ LOCAL_PRIVILEGED_MODULE := true
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
-LOCAL_JAVA_LIBRARIES := org.apache.http.legacy
 LOCAL_JNI_SHARED_LIBRARIES := libopendelta
 LOCAL_REQUIRED_MODULES := libopendelta
-
 LOCAL_PROGUARD_FLAG_FILES := proguard-project.txt
-LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES := \
 
 #Include res dir from libraries
 cardview_dir := ../../../$(SUPPORT_LIBRARY_ROOT)/v7/cardview/res
