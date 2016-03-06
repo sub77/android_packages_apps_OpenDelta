@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -35,11 +36,13 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.format.DateFormat;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -61,8 +64,10 @@ public class MainActivity extends Activity {
     private TextView currentVersion = null;
     private TextView lastChecked = null;
     private TextView downloadSize = null;
-
     private Config config;
+    private boolean mPermOk;
+
+    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,8 @@ public class MainActivity extends Activity {
         downloadSize = (TextView) findViewById(R.id.text_download_size);
 
         config = Config.getInstance(this);
+        mPermOk = false;
+        requestPermissions();
     }
 
     @Override
@@ -133,10 +140,10 @@ public class MainActivity extends Activity {
         case android.R.id.home:
             finish();
             return true;
-        case R.id.settings:
+        /*case R.id.settings:
             Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
-            return true;
+            return true;*/
         case R.id.action_about:
             showAbout();
             return true;
@@ -248,6 +255,12 @@ public class MainActivity extends Activity {
             } else if (UpdateService.STATE_ERROR_CONNECTION.equals(state)) {
                 enableCheck = true;
                 progress.setIndeterminate(false);
+            } else if (UpdateService.STATE_ERROR_PERMISSIONS.equals(state)) {
+                progress.setIndeterminate(false);
+            } else if (UpdateService.STATE_ERROR_FLASH.equals(state)) {
+                enableCheck = true;
+                enableFlash = true;
+                progress.setIndeterminate(false);
             } else if (UpdateService.STATE_ACTION_NONE.equals(state)) {
                 enableCheck = true;
                 progress.setIndeterminate(false);
@@ -303,8 +316,7 @@ public class MainActivity extends Activity {
                     updateVersion = latestFullBase;
                     title = getString(R.string.state_action_build_full);
                 }
-                downloadSizeText = prefs.getString(
-                        UpdateService.PREF_DOWNLOAD_SIZE, "");
+                
             } else if (UpdateService.STATE_ACTION_SEARCHING.equals(state)
                     || UpdateService.STATE_ACTION_CHECKING.equals(state)) {
                 enableProgress = true;
@@ -360,7 +372,17 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-
+            if(updateVersion != null && !("".equals(updateVersion))) {
+                long downloadSize = prefs.getLong(
+                        UpdateService.PREF_DOWNLOAD_SIZE, -1);
+                if(downloadSize == -1) {
+                    downloadSizeText = "";
+                } else if (downloadSize == 0) {
+                    downloadSizeText = getString(R.string.text_download_size_unknown);
+                } else {
+                    downloadSizeText = Formatter.formatFileSize(context, downloadSize);
+                }
+            }
             MainActivity.this.title.setText(title);
             MainActivity.this.sub.setText(sub);
             MainActivity.this.updateVersion.setText(updateVersion);
@@ -515,4 +537,28 @@ public class MainActivity extends Activity {
                         !prefs.getBoolean(UpdateService.PREF_STOP_DOWNLOAD,
                                 false)).commit();
     }
+
+    private void requestPermissions() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            mPermOk = true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mPermOk = true;
+                }
+            }
+        }
+    }
 }
+
