@@ -1,7 +1,6 @@
 /* 
  * Copyright (C) 2013-2014 Jorrit "Chainfire" Jongma
- * Copyright (C) 2013-2015 The Omni Project
- * Copyright (C) 2013-2016 The Exodus Project
+ * Copyright (C) 2013-2015 The OmniROM Project
  */
 /* 
  * This file is part of OpenDelta.
@@ -22,7 +21,6 @@
 
 package eu.chainfire.opendelta;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,22 +32,27 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.UnknownHostException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Date;
-import java.net.HttpURLConnection;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -72,17 +75,23 @@ import android.os.StatFs;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-
 import eu.chainfire.opendelta.BatteryState.OnBatteryStateListener;
 import eu.chainfire.opendelta.DeltaInfo.ProgressListener;
 import eu.chainfire.opendelta.NetworkState.OnNetworkStateListener;
 import eu.chainfire.opendelta.Scheduler.OnWantUpdateCheckListener;
 import eu.chainfire.opendelta.ScreenState.OnScreenStateListener;
 
+import java.io.ByteArrayOutputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+import java.net.HttpURLConnection;
+
 public class UpdateService extends Service implements OnNetworkStateListener,
 OnBatteryStateListener, OnScreenStateListener,
 OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     private static final int HTTP_READ_TIMEOUT = 30000;
+    private static final int HTTP_SOCKET_TIMEOUT = 30000;
     private static final int HTTP_CONNECTION_TIMEOUT = 30000;
 
     public static void start(Context context) {
@@ -147,8 +156,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String STATE_ACTION_BUILD = "action_build";
     public static final String STATE_ERROR_DOWNLOAD = "error_download";
     public static final String STATE_ERROR_CONNECTION = "error_connection";
-    public static final String STATE_ERROR_PERMISSIONS = "error_permissions";
-    public static final String STATE_ERROR_FLASH = "error_flash";
 
     private static final String ACTION_CHECK = "eu.chainfire.opendelta.action.CHECK";
     private static final String ACTION_FLASH = "eu.chainfire.opendelta.action.FLASH";
@@ -182,7 +189,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String PREF_LATEST_FULL_NAME = "latest_full_name";
     public static final String PREF_LATEST_DELTA_NAME = "latest_delta_name";
     public static final String PREF_STOP_DOWNLOAD = "stop_download";
-    public static final String PREF_DOWNLOAD_SIZE = "download_size_long";
+    public static final String PREF_DOWNLOAD_SIZE = "download_size";
     public static final String PREF_DELTA_SIGNATURE = "delta_signature";
     public static final String PREF_INITIAL_FILE = "initial_file";
 
@@ -306,13 +313,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             if (ACTION_CHECK.equals(intent.getAction())) {
-                if (checkPermissions()) {
-                    checkForUpdates(true, PREF_AUTO_DOWNLOAD_CHECK);
-                }
+                checkForUpdates(true, PREF_AUTO_DOWNLOAD_CHECK);
             } else if (ACTION_FLASH.equals(intent.getAction())) {
-                if (checkPermissions()) {
-                    flashUpdate();
-                }
+                flashUpdate();
             } else if (ACTION_ALARM.equals(intent.getAction())) {
                 scheduler.alarm(intent.getIntExtra(EXTRA_ALARM_ID, -1));
             } else if (ACTION_NOTIFICATION_DELETED.equals(intent.getAction())) {
@@ -325,9 +328,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                     prefs.edit().putString(PREF_SNOOZE_UPDATE_NAME, lastBuild).commit();
                 }
             } else if (ACTION_BUILD.equals(intent.getAction())) {
-                if (checkPermissions()) {
-                    checkForUpdates(true, PREF_AUTO_DOWNLOAD_FULL);
-                }
+                checkForUpdates(true, PREF_AUTO_DOWNLOAD_FULL);
             } else if (ACTION_UPDATE.equals(intent.getAction())) {
                 autoState(true, PREF_AUTO_DOWNLOAD_CHECK, false);
             }
@@ -546,35 +547,12 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         notificationManager.cancel(NOTIFICATION_ERROR);
     }
 
-    private HttpURLConnection setupHttpsRequest(String urlStr){
-        URL url;
-        HttpURLConnection urlConnection = null;
-        try {
-            url = new URL(urlStr);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
-            urlConnection.setReadTimeout(HTTP_READ_TIMEOUT);
-            urlConnection.setRequestMethod("GET");
-            urlConnection.setDoInput(true);
-            urlConnection.connect();
-            int code = urlConnection.getResponseCode();
-            if (code != HttpURLConnection.HTTP_OK) {
-                Logger.d("response: %d", code);
-                return null;
-            }
-            return urlConnection;
-        } catch (Exception e) {
-            Logger.i("Failed to connect to server");
-            return null;
-        }
-    }
-
     private byte[] downloadUrlMemory(String url) {
         Logger.d("download: %s", url);
 
         HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null) {
                 return null;
             }
@@ -604,12 +582,35 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         }
     }
 
+    private HttpURLConnection setupHttpRequest(String urlStr){
+        URL url;
+        HttpURLConnection urlConnection = null;
+        try {
+            url = new URL(urlStr);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setConnectTimeout(HTTP_CONNECTION_TIMEOUT);
+            urlConnection.setReadTimeout(HTTP_SOCKET_TIMEOUT);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoInput(true);
+            urlConnection.connect();
+            int code = urlConnection.getResponseCode();
+            if (code != HttpURLConnection.HTTP_OK) {
+                Logger.d("response: %d", code);
+                return null;
+            }
+            return urlConnection;
+        } catch (Exception e) {
+            Logger.i("Failed to connect to server" + e.getMessage());
+            return null;
+        }
+    }
+
     private String downloadUrlMemoryAsString(String url) {
         Logger.d("download: %s", url);
 
         HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return null;
             }
@@ -645,7 +646,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             DeltaInfo.ProgressListener progressListener) {
         Logger.d("download: %s", url);
 
-        HttpURLConnection urlConnection = null;
         MessageDigest digest = null;
         if (matchMD5 != null) {
             try {
@@ -658,18 +658,24 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
         if (f.exists())
             f.delete();
-
         try {
-            urlConnection = setupHttpsRequest(url);
-            if(urlConnection == null){
+            HttpParams params = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(params, HTTP_CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(params, HTTP_SOCKET_TIMEOUT);
+            HttpClient client = new DefaultHttpClient(params);
+            HttpGet request = new HttpGet(url);
+            HttpResponse response = client.execute(request);
+            int code = response.getStatusLine().getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                Logger.d("response: %d", code);
                 return false;
             }
-            long len = urlConnection.getContentLength();
+            long len = (int) response.getEntity().getContentLength();
             long recv = 0;
             if ((len > 0) && (len < 4L * 1024L * 1024L * 1024L)) {
                 byte[] buffer = new byte[262144];
 
-                InputStream is = urlConnection.getInputStream();
+                InputStream is = response.getEntity().getContent();
                 FileOutputStream os = new FileOutputStream(f, false);
                 try {
                     int r;
@@ -710,10 +716,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             // drops, etc. Just log it in debugging mode.
             Logger.ex(e);
             return false;
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
         }
     }
 
@@ -721,7 +723,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             String matchMD5) {
         Logger.d("download: %s", url);
 
-        HttpURLConnection urlConnection = null;
         MessageDigest digest = null;
         long len = 0;
         if (matchMD5 != null) {
@@ -735,15 +736,21 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
         if (f.exists())
             f.delete();
-
         try {
             updateState(STATE_ACTION_DOWNLOADING, 0f, 0L, 0L, f.getName(), null);
-            urlConnection = setupHttpsRequest(url);
-            if(urlConnection == null){
+
+            HttpParams params = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(params, HTTP_CONNECTION_TIMEOUT);
+            HttpConnectionParams.setSoTimeout(params, HTTP_SOCKET_TIMEOUT);
+            HttpClient client = new DefaultHttpClient(params);
+            HttpGet request = new HttpGet(url);
+            HttpResponse response = client.execute(request);
+            int code = response.getStatusLine().getStatusCode();
+            if (code != HttpStatus.SC_OK) {
+                Logger.d("response: %d", code);
                 return false;
             }
-
-            len = urlConnection.getContentLength();
+            len = (int) response.getEntity().getContentLength();
 
             updateState(STATE_ACTION_DOWNLOADING, 0f, 0L, len, f.getName(), null);
 
@@ -778,7 +785,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             if ((len > 0) && (len < 4L * 1024L * 1024L * 1024L)) {
                 byte[] buffer = new byte[262144];
 
-                InputStream is = urlConnection.getInputStream();
+                InputStream is = response.getEntity().getContent();
                 FileOutputStream os = new FileOutputStream(f, false);
                 try {
                     int r;
@@ -821,9 +828,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             return false;
         } finally {
             updateState(STATE_ACTION_DOWNLOADING, 100f, len, len, null, null);
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
         }
     }
 
@@ -832,7 +836,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
         HttpURLConnection urlConnection = null;
         try {
-            urlConnection = setupHttpsRequest(url);
+            urlConnection = setupHttpRequest(url);
             if(urlConnection == null){
                 return 0;
             }
@@ -850,6 +854,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         }
     }
 
+
     private String getNewestFullBuild() {
         Logger.d("Checking for latest full build");
 
@@ -863,26 +868,25 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         JSONObject object = null;
         try {
             object = new JSONObject(buildData);
+
             Iterator<String> nextKey = object.keys();
-            String latestBuild = null;
-            Date latestTimestamp = new Date(0);
+            List<String> buildNames = new ArrayList<String>();
             while (nextKey.hasNext()) {
                 String key = nextKey.next();
                 if (key.equals("./" + config.getDevice())) {
                     JSONArray builds = object.getJSONArray(key);
                     for (int i = 0; i < builds.length(); i++) {
                         JSONObject build = builds.getJSONObject(i);
-                        String fileName = new File(build.getString("filename")).getName();
-                        Date timestamp = new Date(build.getLong("timestamp"));
-                        if (fileName.endsWith(".zip") && fileName.startsWith(config.getFileBaseNamePrefix()) && timestamp.after(latestTimestamp)) {
-                            latestBuild = fileName;
-                            latestTimestamp = timestamp;
+                        String file = build.getString("filename");
+                        if (file.endsWith(".zip")) {
+                            buildNames.add(new File(file).getName());
                         }
                     }
                 }
             }
-            if (latestBuild != null) {
-                return latestBuild;
+            // assumed its always sorted
+            if (buildNames.size() > 0) {
+                return buildNames.get(buildNames.size() - 1);
             }
         } catch (Exception e) {
         }
@@ -1632,7 +1636,6 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             // else to do at
             // at this stage than give up. No reason to crash though.
             Logger.ex(e);
-            updateState(STATE_ERROR_FLASH, null, null, null, null, null);
         }
     }
 
@@ -1786,7 +1789,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
         prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).commit();
         prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).commit();
         prefs.edit().putString(PREF_READY_FILENAME_NAME, PREF_READY_FILENAME_DEFAULT).commit();
-        prefs.edit().putLong(PREF_DOWNLOAD_SIZE, -1).commit();
+        prefs.edit().putString(PREF_DOWNLOAD_SIZE, null).commit();
         prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, false).commit();
         prefs.edit().putString(PREF_INITIAL_FILE, PREF_READY_FILENAME_DEFAULT).commit();
     }
@@ -1845,8 +1848,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                     String latestFullBuild = getNewestFullBuild();
                     // if we dont even find a build on dl no sense to continue
                     if (latestFullBuild == null) {
-                        Logger.d("no latest build found at " + config.getUrlBaseJson() +
-                                " for " + config.getDevice() + " prefix " + config.getFileBaseNamePrefix());
+                        Logger.d("no latest build found at " + config.getUrlBaseJson() + " for " + config.getDevice());
                         return;
                     }
 
@@ -1976,17 +1978,22 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                                     prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
                                     downloadFullBuild = false;
                                 } else {
-                                    Logger.d("md5 check failed : " + fn);
+                                    Logger.d("md5sum check failed : " + fn);
                                 }
                             }
                         }
-                        if (updateAvilable ) { //&& downloadFullBuild) {
+                        if (updateAvilable && downloadFullBuild) {
                             long size = getUrlDownloadSize(latestFullFetch);
-                            prefs.edit().putLong(PREF_DOWNLOAD_SIZE, size).commit();
-                            Logger.d("BUILD SIZE = " + prefs.getLong(
-                        UpdateService.PREF_DOWNLOAD_SIZE, -1));
+                            if (size != 0) {
+                                prefs.edit().putString(PREF_DOWNLOAD_SIZE,
+                                                String.valueOf(size)).commit();
+                            } else {
+                                prefs.edit().putString(PREF_DOWNLOAD_SIZE,
+                                                getString(R.string.text_download_size_unknown))
+                                        .commit();
+                            }
                         }
-                        Logger.d("check done: latest full build available = " + prefs.getString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT) +
+                        Logger.d("check donne: latest full build available = " + prefs.getString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT) +
                                 " : updateAvilable = " + updateAvilable + " : downloadFullBuild = " + downloadFullBuild);
 
                         if (checkOnly == PREF_AUTO_DOWNLOAD_CHECK) {
@@ -2057,9 +2064,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         }
                         if (updateAvilable) {
                             if (deltaUpdatePossible) {
-                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, deltaDownloadSize).commit();
+                                prefs.edit().putString(PREF_DOWNLOAD_SIZE, String.valueOf(deltaDownloadSize)).commit();
                             } else if (downloadFullBuild) {
-                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, fullDownloadSize).commit();
+                                prefs.edit().putString(PREF_DOWNLOAD_SIZE, String.valueOf(fullDownloadSize)).commit();
                             }
                         }
                         Logger.d("check donne: latest valid delta update = " + prefs.getString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT) +
@@ -2154,15 +2161,5 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                 }
             }
         });
-    }
-
-    private boolean checkPermissions() {
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            Logger.d("checkPermissions failed");
-            updateState(STATE_ERROR_PERMISSIONS, null, null, null, null, null);
-            return false;
-        }
-        return true;
     }
 }

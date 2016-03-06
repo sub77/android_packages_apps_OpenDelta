@@ -21,7 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include "xdelta3-3.0.7/xdelta3.h"
 #include "delta.h"
