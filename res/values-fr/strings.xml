@@ -40,7 +40,7 @@
   <string name="notify_checking">Vérification des mises à jour disponibles&#8230;</string>
   <string name="last_checked" formatted="false">%s à %s</string>
   <string name="last_checked_never">Nous n\'avons jamais effectué de vérification, voulez-vous le faire maintenant\u00A0?</string>
-  <string name="button_check_now">Vérifier les mises à jour disponibles</string>
+  <string name="button_check_now">Vérifier les màjs</string>
   <string name="button_flash_now">Installer</string>
   <string name="action_secure_mode">Sécurité</string>
   <string name="secure_mode_enabled_title">Mode de sécurité : activé</string>
