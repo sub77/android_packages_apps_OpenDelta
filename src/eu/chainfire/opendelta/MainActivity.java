@@ -141,10 +141,10 @@ public class MainActivity extends Activity {
         case android.R.id.home:
             finish();
             return true;
-        /*case R.id.settings:
-            Intent settingsActivity = new Intent(this, SettingsActivity.class);
-            startActivity(settingsActivity);
-            return true;*/
+        case R.id.settings:
+            Intent SettingsActivity = new Intent(this, SettingsActivity.class);
+            startActivity(SettingsActivity);
+            return true;
         case R.id.action_about:
             showAbout();
             return true;
