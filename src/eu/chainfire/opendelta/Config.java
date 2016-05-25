@@ -48,6 +48,8 @@ public class Config {
     private final static String PREF_SHOWN_RECOVERY_WARNING_SECURE_NAME = "shown_recovery_warning_secure";
     private final static String PREF_SHOWN_RECOVERY_WARNING_NOT_SECURE_NAME = "shown_recovery_warning_not_secure";
 
+    private final static String PREF_BETA_MODE_NAME = "beta_mode";
+
     private final SharedPreferences prefs;
 
     private final String property_version;
@@ -64,11 +66,17 @@ public class Config {
     private final String inject_signature_keys;
     private final boolean secure_mode_enable;
     private final boolean secure_mode_default;
+    private final boolean beta_mode_enable;
+    private final boolean beta_mode_default;
     private final boolean keep_screen_on;
     private final String filename_base_prefix;
-    private final String url_base_json;
-    private final String url_base_json_testing;
     private final String official_version_tag;
+    private final String url_beta_delta;
+    private final String url_beta_update;
+    private final String url_beta_full;
+    private final String url_base_json;
+    private final String url_beta_json;
+
 
     /*
      * Using reflection voodoo instead calling the hidden class directly, to
@@ -121,8 +129,16 @@ public class Config {
         inject_signature_keys = res.getString(R.string.inject_signature_keys);
         secure_mode_enable = res.getBoolean(R.bool.secure_mode_enable);
         secure_mode_default = res.getBoolean(R.bool.secure_mode_default);
+        url_beta_delta = String.format(Locale.ENGLISH,
+                res.getString(R.string.url_beta_delta), property_device);
+        url_beta_update = String.format(Locale.ENGLISH,
+                res.getString(R.string.url_beta_update), property_device);
+        url_beta_full = String.format(Locale.ENGLISH,
+                res.getString(R.string.url_beta_full), property_device);
+        beta_mode_enable = res.getBoolean(R.bool.beta_mode_enable);
+        beta_mode_default = res.getBoolean(R.bool.beta_mode_default);
         url_base_json = res.getString(R.string.url_base_json);
-        url_base_json_testing = res.getString(R.string.url_base_json_testing);
+        url_beta_json = res.getString(R.string.url_beta_json);
         filename_base_prefix = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), "");
         official_version_tag = res.getString(R.string.official_version_tag);
@@ -199,6 +215,15 @@ public class Config {
         }
     }
 
+    public boolean getBetaUpdateEnable() {
+
+        if (getBetaModeEnable()) {
+            return getBetaModeCurrent();
+        } else {
+            return beta_mode_enable;
+        }
+    }
+
     public String getInjectSignatureKeys() {
         return inject_signature_keys;
     }
@@ -222,6 +247,27 @@ public class Config {
                 .putBoolean(PREF_SECURE_MODE_NAME,
                         getSecureModeEnable() && enable).commit();
         return getSecureModeCurrent();
+    }
+
+    public boolean getBetaModeEnable() {
+        return beta_mode_enable;
+    }
+
+    public boolean getBetaModeDefault() {
+        return beta_mode_default && getBetaModeEnable();
+    }
+
+    public boolean getBetaModeCurrent() {
+        return getBetaModeEnable()
+                && prefs.getBoolean(PREF_BETA_MODE_NAME,
+                        getBetaModeDefault());
+    }
+
+   public boolean setBetaModeCurrent(boolean enable) {
+        prefs.edit()
+                 .putBoolean(PREF_BETA_MODE_NAME,
+                        getBetaModeEnable() && enable).commit();
+        return getBetaModeCurrent();
     }
 
     public List<String> getFlashAfterUpdateZIPs() {
@@ -279,15 +325,16 @@ public class Config {
         return filename_base_prefix;
     }
 
-    public String getUrlBaseJson() {
-        if (property_update.equals("testing")) {
-        return url_base_json_testing;
-        } else {
-        return url_base_json;
-	    }
-    }
-
     public String getOfficialVersionTag() {
         return official_version_tag;
     }
-}
+
+    public String getUrlBaseJson() {
+		
+		 if (getBetaModeEnable()) {
+            return url_beta_json;
+        } else {
+            return url_base_json;
+        }
+    }
+ }

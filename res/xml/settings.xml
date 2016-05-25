@@ -25,6 +25,11 @@
 			android:key="secure_mode"
 			android:persistent="false"
 			android:title="@string/secure_mode_title" />
+		<CheckBoxPreference
+			android:defaultValue="false"
+			android:key="beta_mode"
+			android:persistent="false"
+			android:title="@string/beta_mode_title" />
 	</PreferenceCategory>
 	<PreferenceCategory
 		android:key="category_scheduler"

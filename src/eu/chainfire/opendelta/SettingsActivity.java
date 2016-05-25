@@ -54,6 +54,7 @@ public class SettingsActivity extends PreferenceActivity implements
     public static final String PREF_CHARGE_ONLY = "charge_only";
     public static final String PREF_BATTERY_LEVEL = "battery_level_string";
     private static final String KEY_SECURE_MODE = "secure_mode";
+    private static final String KEY_BETA_MODE = "beta_mode";
     private static final String KEY_CATEGORY_DOWNLOAD = "category_download";
     public static final String PREF_SCREEN_STATE_OFF = "screen_state_off";
     private static final String PREF_CLEAN_FILES = "clear_files";
@@ -72,6 +73,7 @@ public class SettingsActivity extends PreferenceActivity implements
     private ListPreference mBatteryLevel;
     private CheckBoxPreference mChargeOnly;
     private CheckBoxPreference mSecureMode;
+    private CheckBoxPreference mBetaMode;
     private Config mConfig;
     private PreferenceCategory mAutoDownloadCategory;
     private ListPreference mSchedulerMode;
@@ -114,11 +116,16 @@ public class SettingsActivity extends PreferenceActivity implements
         mBatteryLevel.setSummary(mBatteryLevel.getEntry());
         mChargeOnly = (CheckBoxPreference) findPreference(PREF_CHARGE_ONLY);
         mBatteryLevel.setEnabled(!prefs.getBoolean(PREF_CHARGE_ONLY, true));
+
+        mAutoDownloadCategory = (PreferenceCategory) findPreference(KEY_CATEGORY_DOWNLOAD);
+ 
         mSecureMode = (CheckBoxPreference) findPreference(KEY_SECURE_MODE);
         mSecureMode.setEnabled(mConfig.getSecureModeEnable());
         mSecureMode.setChecked(mConfig.getSecureModeCurrent());
-        mAutoDownloadCategory = (PreferenceCategory) findPreference(KEY_CATEGORY_DOWNLOAD);
-
+ 
+        mBetaMode = (CheckBoxPreference) findPreference(KEY_BETA_MODE);
+        mBetaMode.setEnabled(mConfig.getBetaModeEnable());
+        mBetaMode.setChecked(mConfig.getBetaModeCurrent());
 
         mAutoDownloadCategory
                 .setEnabled(autoDownloadValue > UpdateService.PREF_AUTO_DOWNLOAD_CHECK);
@@ -166,6 +173,10 @@ public class SettingsActivity extends PreferenceActivity implements
         } else if (preference == mChargeOnly) {
             boolean value = ((CheckBoxPreference) preference).isChecked();
             mBatteryLevel.setEnabled(!value);
+            return true;
+        } else if (preference ==  mBetaMode) {
+            boolean value = ((CheckBoxPreference) preference).isChecked();
+             mConfig.setBetaModeCurrent(value);
             return true;
         } else if (preference == mSecureMode) {
             boolean value = ((CheckBoxPreference) preference).isChecked();

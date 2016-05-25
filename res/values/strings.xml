@@ -99,10 +99,18 @@
 	<string name="networks_message">Download only on networks types</string>
 	<string name="category_flashing">Flashing</string>
 	<string name="secure_mode_title">Secure mode</string>
+	<string name="beta_mode_title">Beta mode</string>	
 	<string name="state_error_connection">No data connection.</string>
 	<string name="category_admin">Maintenance</string>
 	<string name="clear_files_title">Clean update files</string>
 	<string name="clear_files_summary">Delete existing update files to force downloading full update</string>
 	<string name="clean_files_feedback" formatted="false">Deleted %d files. Now press \'Check for updates\'</string>
+	
+	<string name="action_beta_mode">Beta</string>
+	<string name="beta_mode_enabled_title">Beta mode: enabled</string>
+	<string name="beta_mode_enabled_description"><![CDATA[The update\'s cryptographic signature will be verified before flashing to confirm its origin, and no additional updates will be flashed. This mode is only compatible with <b>TWRP</b>.]]></string>
+	<string name="beta_mode_disabled_title">Beta mode: disabled</string>
+	<string name="beta_mode_disabled_description"><![CDATA[Additional updates are flashed if present. Note that any (malicious) software package can place these updates and gain full system access. Caution is advised.]]></string>
+
 
 </resources>
