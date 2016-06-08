@@ -18,6 +18,7 @@
 package com.resurrection.ota;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,12 +26,16 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -44,6 +49,7 @@ import android.preference.PreferenceScreen;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -81,6 +87,11 @@ public class SettingsActivity extends PreferenceActivity implements
     private Preference mCleanFiles;
     private ListPreference mScheduleWeekDay;
     private CheckBoxPreference mBetaMode;
+
+    Process shellprocess;
+
+    String[] shutdownbefehl = {"su", "-c", "am start -S com.resurrection.ota/com.resurrection.ota.MainActivity"};
+    String[] restartbefehl = {"reloadota.sh"};
 
     @Override
     public void onPause() {
@@ -147,7 +158,6 @@ public class SettingsActivity extends PreferenceActivity implements
         mScheduleWeekDay.setEnabled(schedulerMode.equals(PREF_SCHEDULER_MODE_WEEKLY));
 
         mBetaMode = (CheckBoxPreference) findPreference(PREF_TESTING_MODE);
-
     }
 
     @Override
