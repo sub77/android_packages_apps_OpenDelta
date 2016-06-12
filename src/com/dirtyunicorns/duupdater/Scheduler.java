@@ -42,7 +42,7 @@
  * (Wi-Fi) and battery (charging / juice aplenty) state. 
  */
 
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -51,7 +51,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import com.resurrection.ota.ScreenState.OnScreenStateListener;
+import com.dirtyunicorns.duupdater.ScreenState.OnScreenStateListener;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

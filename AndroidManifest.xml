@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.resurrection.ota"
+	package="com.dirtyunicorns.duupdater"
 	android:versionCode="10"
-	android:versionName="1.1" >
+	android:versionName="1.6" >
 	<uses-sdk
 		android:minSdkVersion="23"
 		android:targetSdkVersion="23" />
@@ -20,12 +20,12 @@
 	<uses-permission android:name="android.permission.RECOVERY" />
 
 	<application
-		android:name="com.resurrection.ota.Application"
+		android:name="com.dirtyunicorns.duupdater.Application"
 		android:allowBackup="false"
 		android:icon="@mipmap/omnirom_logo"
 		android:label="@string/app_name" >
 		<activity
-			android:name="com.resurrection.ota.MainActivity"
+			android:name="com.dirtyunicorns.duupdater.MainActivity"
 			android:label="@string/title"
 			android:launchMode="singleInstance"
 			android:theme="@style/Theme.OpenDelta" >
@@ -43,7 +43,7 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="com.resurrection.ota.Shortcut"
+			android:name="com.dirtyunicorns.duupdater.Shortcut"
 			android:label="@string/title"
 			android:theme="@android:style/Theme.Translucent.NoTitleBar" >
 			<intent-filter>
@@ -52,18 +52,18 @@
 			</intent-filter>
 		</activity>
 		<activity
-			android:name="com.resurrection.ota.SettingsActivity"
+			android:name="com.dirtyunicorns.duupdater.SettingsActivity"
 			android:label="@string/menu_settings"
 			android:theme="@style/Theme.OpenDelta.Settings" >
 		</activity>
-		<receiver android:name="com.resurrection.ota.BootCompleteReceiver" >
+		<receiver android:name="com.dirtyunicorns.duupdater.BootCompleteReceiver" >
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
 				<category android:name="android.intent.category.HOME" />
 			</intent-filter>
 		</receiver>
 		<service
-			android:name="com.resurrection.ota.UpdateService"
+			android:name="com.dirtyunicorns.duupdater.UpdateService"
 			android:exported="false" />
 	</application>
 </manifest>

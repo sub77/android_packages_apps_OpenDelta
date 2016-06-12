@@ -19,12 +19,14 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
-public class Application extends android.app.Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Logger.setDebugLogging(getResources().getBoolean(R.bool.debug_output));
+public class Native {
+    public static native int zipadjust(String filenameIn, String filenameOut, int decompress);
+
+    public static native int dedelta(String filenameSource, String filenameDelta, String filenameOut);
+
+    static {
+        System.loadLibrary("opendelta");
     }
 }
