@@ -22,7 +22,7 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -75,11 +75,11 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.resurrection.ota.BatteryState.OnBatteryStateListener;
-import com.resurrection.ota.DeltaInfo.ProgressListener;
-import com.resurrection.ota.NetworkState.OnNetworkStateListener;
-import com.resurrection.ota.Scheduler.OnWantUpdateCheckListener;
-import com.resurrection.ota.ScreenState.OnScreenStateListener;
+import com.dirtyunicorns.duupdater.BatteryState.OnBatteryStateListener;
+import com.dirtyunicorns.duupdater.DeltaInfo.ProgressListener;
+import com.dirtyunicorns.duupdater.NetworkState.OnNetworkStateListener;
+import com.dirtyunicorns.duupdater.Scheduler.OnWantUpdateCheckListener;
+import com.dirtyunicorns.duupdater.ScreenState.OnScreenStateListener;
 
 public class UpdateService extends Service implements OnNetworkStateListener,
 OnBatteryStateListener, OnScreenStateListener,
@@ -124,14 +124,14 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String PERMISSION_ACCESS_CACHE_FILESYSTEM = "android.permission.ACCESS_CACHE_FILESYSTEM";
     public static final String PERMISSION_REBOOT = "android.permission.REBOOT";
 
-    public static final String BROADCAST_INTENT = "com.resurrection.ota.intent.BROADCAST_STATE";
-    public static final String EXTRA_STATE = "com.resurrection.ota.extra.ACTION_STATE";
-    public static final String EXTRA_LAST_CHECK = "com.resurrection.ota.extra.LAST_CHECK";
-    public static final String EXTRA_PROGRESS = "com.resurrection.ota.extra.PROGRESS";
-    public static final String EXTRA_CURRENT = "com.resurrection.ota.extra.CURRENT";
-    public static final String EXTRA_TOTAL = "com.resurrection.ota.extra.TOTAL";
-    public static final String EXTRA_FILENAME = "com.resurrection.ota.extra.FILENAME";
-    public static final String EXTRA_MS = "com.resurrection.ota.extra.MS";
+    public static final String BROADCAST_INTENT = "com.dirtyunicorns.duupdater.intent.BROADCAST_STATE";
+    public static final String EXTRA_STATE = "com.dirtyunicorns.duupdater.extra.ACTION_STATE";
+    public static final String EXTRA_LAST_CHECK = "com.dirtyunicorns.duupdater.extra.LAST_CHECK";
+    public static final String EXTRA_PROGRESS = "com.dirtyunicorns.duupdater.extra.PROGRESS";
+    public static final String EXTRA_CURRENT = "com.dirtyunicorns.duupdater.extra.CURRENT";
+    public static final String EXTRA_TOTAL = "com.dirtyunicorns.duupdater.extra.TOTAL";
+    public static final String EXTRA_FILENAME = "com.dirtyunicorns.duupdater.extra.FILENAME";
+    public static final String EXTRA_MS = "com.dirtyunicorns.duupdater.extra.MS";
 
     public static final String STATE_ACTION_NONE = "action_none";
     public static final String STATE_ACTION_CHECKING = "action_checking";
@@ -152,13 +152,13 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String STATE_ERROR_PERMISSIONS = "error_permissions";
     public static final String STATE_ERROR_FLASH = "error_flash";
 
-    private static final String ACTION_CHECK = "com.resurrection.ota.action.CHECK";
-    private static final String ACTION_FLASH = "com.resurrection.ota.action.FLASH";
-    private static final String ACTION_ALARM = "com.resurrection.ota.action.ALARM";
-    private static final String EXTRA_ALARM_ID = "com.resurrection.ota.extra.ALARM_ID";
-    private static final String ACTION_NOTIFICATION_DELETED = "com.resurrection.ota.action.NOTIFICATION_DELETED";
-    private static final String ACTION_BUILD = "com.resurrection.ota.action.BUILD";
-    private static final String ACTION_UPDATE = "com.resurrection.ota.action.UPDATE";
+    private static final String ACTION_CHECK = "com.dirtyunicorns.duupdater.action.CHECK";
+    private static final String ACTION_FLASH = "com.dirtyunicorns.duupdater.action.FLASH";
+    private static final String ACTION_ALARM = "com.dirtyunicorns.duupdater.action.ALARM";
+    private static final String EXTRA_ALARM_ID = "com.dirtyunicorns.duupdater.extra.ALARM_ID";
+    private static final String ACTION_NOTIFICATION_DELETED = "com.dirtyunicorns.duupdater.action.NOTIFICATION_DELETED";
+    private static final String ACTION_BUILD = "com.dirtyunicorns.duupdater.action.BUILD";
+    private static final String ACTION_UPDATE = "com.dirtyunicorns.duupdater.action.UPDATE";
 
     private static final int NOTIFICATION_BUSY = 1;
     private static final int NOTIFICATION_UPDATE = 2;

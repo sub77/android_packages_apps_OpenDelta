@@ -1,4 +1,4 @@
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
 import android.app.Activity;
 import android.os.Bundle;

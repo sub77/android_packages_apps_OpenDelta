@@ -19,14 +19,15 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
-public class Native {
-    public static native int zipadjust(String filenameIn, String filenameOut, int decompress);
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
-    public static native int dedelta(String filenameSource, String filenameDelta, String filenameOut);
-
-    static {
-        System.loadLibrary("opendelta");
+public class BootCompleteReceiver extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        UpdateService.start(context);
     }
 }

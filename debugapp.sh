@@ -4,7 +4,7 @@ DBGAPKPATH="build/outputs/apk/OpenDelta_RS-debug.apk"
 ADBARGS=""
 CONTINUEXEC=true
 COMPILEAPP=false
-APPK="com.resurrection.ota"
+APPK="com.dirtyunicorns.duupdater"
 
 if [ "$1" == "--adbArgs" ]; then
   ADBARGS="$2 $3 $4 $5 $6"

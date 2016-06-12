@@ -19,7 +19,7 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.resurrection.ota;
+package com.dirtyunicorns.duupdater;
 
 import android.content.Context;
 import android.content.SharedPreferences;
