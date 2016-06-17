@@ -17,11 +17,6 @@
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="beta_mode"
-		android:persistent="true"
-		android:title="@string/beta_mode_title" />
 	<PreferenceCategory
 		android:key="category_flashing"
 		android:title="@string/category_flashing" >

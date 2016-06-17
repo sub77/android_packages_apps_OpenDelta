@@ -108,4 +108,14 @@
 	<string name="clean_files_feedback" formatted="false">Deleted %d files. Now press \'Check for updates\'</string>
 	<string name="beta_mode_title">Testing Updates</string>
 
+	<!-- additions for developer mode -->
+	<string name="action_dev_mode">Log in as developer</string>
+	<string name="action_dev_mode_on">Logged in as developer</string>
+	<string name="dev_mode_login_logout_cancel">Cancel</string>
+	<string name="dev_mode_login">Log in</string>
+	<string name="dev_mode_logout">Log out</string>
+	<string name="dev_mode_login_password">Password</string>
+	<string name="dev_mode_remember_dev_login">Remember</string>
+	<string name="dev_mode_login_wrong_pw">Wrong password</string>
+	<string name="dev_mode_logout_dev_mode">Log out of dev mode?</string>
 </resources>

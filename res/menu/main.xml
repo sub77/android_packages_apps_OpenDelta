@@ -11,4 +11,11 @@
 		android:showAsAction="never"
 		android:title="@string/action_about"/>
 
+	<item
+		android:id="@+id/action_dev_mode"
+		android:orderInCategory="102"
+		android:showAsAction="never"
+		android:checkable="true"
+		android:title="@string/action_dev_mode" />
+
 </menu>

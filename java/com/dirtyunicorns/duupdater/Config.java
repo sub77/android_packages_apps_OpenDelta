@@ -58,9 +58,6 @@ public class Config {
     private final String url_base_delta;
     private final String url_base_update;
     private final String url_base_full;
-    private final String url_base_delta_dev;
-    private final String url_base_update_dev;
-    private final String url_base_full_dev;
     private final boolean apply_signature;
     private final boolean inject_signature_enable;
     private final String inject_signature_keys;
@@ -69,13 +66,8 @@ public class Config {
     private final boolean keep_screen_on;
     private final String filename_base_prefix;
     private final String url_base_json;
-    private final String url_base_json_dev;
     private final String official_version_tag;
-    private final String dev_mode_pw;
-
-    public final static String PREFS_REMEMBER_LOGIN = "devLoginRemember";
-    public final static String PREFS_DEV_MODE = "devMode";
-
+    private final String beta_mode;
 
     /*
      * Using reflection voodoo instead calling the hidden class directly, to
@@ -118,16 +110,6 @@ public class Config {
                 res.getString(R.string.url_base_delta), property_device);
         url_base_update = String.format(Locale.ENGLISH,
                 res.getString(R.string.url_base_update), property_device);
-        url_base_full = String.format(Locale.ENGLISH,
-                res.getString(R.string.url_base_full), property_device);
-        url_base_json = res.getString(R.string.url_base_json);
-        url_base_delta_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_delta_dev),
-                property_device);
-        url_base_update_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_update_dev),
-                property_device);
-        url_base_full_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_full_dev),
-                property_device);
-        url_base_json_dev = res.getString(R.string.url_base_json_dev);
         apply_signature = res.getBoolean(R.bool.apply_signature);
         inject_signature_enable = res
                 .getBoolean(R.bool.inject_signature_enable);
@@ -137,8 +119,6 @@ public class Config {
         filename_base_prefix = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), "");
         official_version_tag = res.getString(R.string.official_version_tag);
-        dev_mode_pw = res.getString(R.string.dev_mode_pw);
-
         boolean keep_screen_on = false;
         try {
             String[] devices = res
@@ -155,6 +135,18 @@ public class Config {
         }
         this.keep_screen_on = keep_screen_on;
 
+        if (prefs.getBoolean(SettingsActivity.PREF_TESTING_MODE, true)) {
+            beta_mode = "enabled";
+            url_base_json = res.getString(R.string.url_beta_json);
+            url_base_full = String.format(Locale.ENGLISH,
+                    res.getString(R.string.url_beta_full), property_device);
+        } else {
+            beta_mode = "disabled";
+            url_base_json = res.getString(R.string.url_stable_json);
+            url_base_full = String.format(Locale.ENGLISH,
+                    res.getString(R.string.url_stable_full), property_device);
+        }
+
         Logger.d("property_version: %s", property_version);
         Logger.d("property_device: %s", property_device);
         Logger.d("filename_base: %s", filename_base);
@@ -163,12 +155,15 @@ public class Config {
         Logger.d("path_flash_after_update: %s", path_flash_after_update);
         Logger.d("url_base_delta: %s", url_base_delta);
         Logger.d("url_base_update: %s", url_base_update);
+        Logger.d("url_base_full: %s", url_base_full);
+        Logger.d("url_base_json: %s", url_base_json);
         Logger.d("apply_signature: %d", apply_signature ? 1 : 0);
         Logger.d("inject_signature_enable: %d", inject_signature_enable ? 1 : 0);
         Logger.d("inject_signature_keys: %s", inject_signature_keys);
         Logger.d("secure_mode_enable: %d", secure_mode_enable ? 1 : 0);
         Logger.d("secure_mode_default: %d", secure_mode_default ? 1 : 0);
         Logger.d("keep_screen_on: %d", keep_screen_on ? 1 : 0);
+        Logger.d("beta_mode: %s", beta_mode );
     }
 
     public String getFilenameBase() {
@@ -184,25 +179,15 @@ public class Config {
     }
 
     public String getUrlBaseDelta() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_delta_dev;
-        else return url_base_delta;
+        return url_base_delta;
     }
 
     public String getUrlBaseUpdate() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_update_dev;
-        else return url_base_update;
+        return url_base_update;
     }
 
     public String getUrlBaseFull() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_full_dev;
-        else return url_base_full;
-    }
-
-    public String getDev_mode_pw(){
-        return dev_mode_pw;
+        return url_base_full;
     }
 
     public boolean getApplySignature() {
