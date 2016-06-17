@@ -37,11 +37,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.text.Html;
 import android.text.format.DateFormat;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,7 +57,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//import eu.chainfire.libsuperuser.Shell;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -73,15 +91,25 @@ public class MainActivity extends Activity {
     private TextView downloadSize = null;
     private Config config;
     private boolean mPermOk;
-
     private boolean rememberDevLogin;
     private boolean isDevMode;
 
     private MenuItem menuItemDevMode;
-
     private SharedPreferences mPrefs;
 
+    String READ_URL;
+
+    String httpList;
+    String httpPref;
+
+    TextView tv2;
+
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +144,8 @@ public class MainActivity extends Activity {
         lastChecked = (TextView) findViewById(R.id.text_last_checked);
         downloadSize = (TextView) findViewById(R.id.text_download_size);
 
+        tv2 = (TextView) findViewById(R.id.TextView2);
+
         config = Config.getInstance(this);
         mPermOk = false;
         requestPermissions();
@@ -123,6 +153,9 @@ public class MainActivity extends Activity {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         rememberDevLogin = mPrefs.getBoolean(Config.PREFS_REMEMBER_LOGIN, false);
         isDevMode = mPrefs.getBoolean(Config.PREFS_DEV_MODE, false);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -131,7 +164,7 @@ public class MainActivity extends Activity {
 
         menuItemDevMode = menu.findItem(R.id.action_dev_mode);
 
-        if(rememberDevLogin) {
+        if (rememberDevLogin) {
             menuItemDevMode.setTitle(getString(R.string.action_dev_mode_on));
             menuItemDevMode.setChecked(true);
         }
@@ -139,8 +172,8 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    private void showDevLogin(){
-        final Dialog loginDialog =  new Dialog(this);
+    private void showDevLogin() {
+        final Dialog loginDialog = new Dialog(this);
         loginDialog.setContentView(R.layout.dialog_login);
         loginDialog.setTitle(getString(R.string.dev_mode_login));
 
@@ -148,20 +181,20 @@ public class MainActivity extends Activity {
 
         final String devModePw = config.getDev_mode_pw();
 
-        Button btnLogin = (Button)loginDialog.findViewById(R.id.btnLogin);
-        Button btnCancel = (Button)loginDialog.findViewById(R.id.btnCancel);
-        final EditText etPassword = (EditText)loginDialog.findViewById(R.id.txtPassword);
-        final CheckBox cbRemember = (CheckBox)loginDialog.findViewById(R.id.remember_dev_login);
+        Button btnLogin = (Button) loginDialog.findViewById(R.id.btnLogin);
+        Button btnCancel = (Button) loginDialog.findViewById(R.id.btnCancel);
+        final EditText etPassword = (EditText) loginDialog.findViewById(R.id.txtPassword);
+        final CheckBox cbRemember = (CheckBox) loginDialog.findViewById(R.id.remember_dev_login);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(etPassword.getText().toString().equals(devModePw)){
+                if (etPassword.getText().toString().equals(devModePw)) {
                     mEditor.putBoolean(Config.PREFS_DEV_MODE, true).apply();
                     isDevMode = true;
 
-                    if(cbRemember.isChecked()) {
+                    if (cbRemember.isChecked()) {
                         mEditor.putBoolean(Config.PREFS_REMEMBER_LOGIN, true).apply();
                         rememberDevLogin = true;
                     }
@@ -172,8 +205,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, getString(R.string.action_dev_mode_on), Toast.LENGTH_SHORT).show();
 
                     loginDialog.dismiss();
-                }
-                else
+                } else
                     Toast.makeText(MainActivity.this, getString(R.string.dev_mode_login_wrong_pw), Toast.LENGTH_SHORT).show();
             }
         });
@@ -185,11 +217,10 @@ public class MainActivity extends Activity {
             }
         });
 
-
         loginDialog.show();
     }
 
-    private void showDevLogout(){
+    private void showDevLogout() {
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.dev_mode_logout_dev_mode))
                 .setNegativeButton(getString(R.string.dev_mode_login_logout_cancel), null)
@@ -234,23 +265,23 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case android.R.id.home:
-            finish();
-            return true;
-        case R.id.settings:
-            Intent settingsActivity = new Intent(this, SettingsActivity.class);
-            startActivity(settingsActivity);
-            return true;
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.settings:
+                Intent settingsActivity = new Intent(this, SettingsActivity.class);
+                startActivity(settingsActivity);
+                return true;
             case R.id.action_dev_mode:
-                if(!isDevMode)
+                if (!isDevMode)
                     showDevLogin();
                 else showDevLogout();
                 return true;
-        case R.id.action_about:
-            showAbout();
-            return true;
-        default:
-            return super.onOptionsItemSelected(item);
+            case R.id.action_about:
+                showAbout();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -417,7 +448,7 @@ public class MainActivity extends Activity {
                     updateVersion = latestFullBase;
                     title = getString(R.string.state_action_build_full);
                 }
-                
+
             } else if (UpdateService.STATE_ACTION_SEARCHING.equals(state)
                     || UpdateService.STATE_ACTION_CHECKING.equals(state)) {
                 enableProgress = true;
@@ -473,10 +504,10 @@ public class MainActivity extends Activity {
                     }
                 }
             }
-            if(updateVersion != null && !("".equals(updateVersion))) {
+            if (updateVersion != null && !("".equals(updateVersion))) {
                 long downloadSize = prefs.getLong(
                         UpdateService.PREF_DOWNLOAD_SIZE, -1);
-                if(downloadSize == -1) {
+                if (downloadSize == -1) {
                     downloadSizeText = "";
                 } else if (downloadSize == 0) {
                     downloadSizeText = getString(R.string.text_download_size_unknown);
@@ -514,13 +545,45 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         registerReceiver(updateReceiver, updateFilter);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.dirtyunicorns.duupdater/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
     protected void onStop() {
         unregisterReceiver(updateReceiver);
         super.onStop();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Main Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://com.dirtyunicorns.duupdater/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
     @Override
@@ -534,6 +597,62 @@ public class MainActivity extends Activity {
                 .getDefaultSharedPreferences(this);
         prefs.edit().putBoolean(SettingsActivity.PREF_START_HINT_SHOWN, true).commit();
         UpdateService.startCheck(this);
+    }
+
+    public void onButton1NowClick(View v) {
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean(SettingsActivity.PREF_START_HINT_SHOWN, true).commit();
+        httpList = "mixFile.txt";
+        httpPref = "m";
+        downloadTxt();
+        readTxt();
+        downloadApk();
+    }
+    public void onButton2NowClick(View v) {
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean(SettingsActivity.PREF_START_HINT_SHOWN, true).commit();
+        httpList = "mixAddonFile.txt";
+        httpPref = "ma";
+        downloadTxt();
+        readTxt();
+        downloadApk();
+    }
+    public void onButton3NowClick(View v) {
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean(SettingsActivity.PREF_START_HINT_SHOWN, true).commit();
+        checkPersist();
+        httpList = "persistFile.txt";
+        httpPref = "p";
+        File cpto = new File(Environment.getExternalStorageDirectory() + "/RomAddon/"+httpList);
+        //Shell.SU.run(("cp -p /persist/persistFile.txt"+" " + cpto));
+        readTxt();
+        downloadApk();
+    }
+    public void onButton4NowClick(View v) {
+        final SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        prefs.edit().putBoolean(SettingsActivity.PREF_START_HINT_SHOWN, true).commit();
+        (new AlertDialog.Builder(this))
+                .setTitle(R.string.persistent_title)
+                .setMessage(Html.fromHtml(getString(R.string.persistent_description)))
+                .setCancelable(true)
+                .setNeutralButton(android.R.string.ok, null).show();
+        File sdcard = Environment.getExternalStorageDirectory();
+        File check = new File(sdcard, "RomAddon/persistTemplateFile.txt");
+        File check2 = new File(sdcard, "RomAddon/persistFile.txt");
+        if (!check.exists()) {
+            httpList = "persistTemplateFile.txt";
+            downloadTxt();
+        }   if (check2.exists()) {
+            //bt4.setText("Update persistent FileList");
+            //Shell.SU.run(("mount -o rw,remount /persist"));
+            //Shell.SU.run(("rm" +" "+"/persist/persistFile.txt"));
+            //Shell.SU.run(("cp -p "+ check2 +" "+"/persist/persistFile.txt"));
+            //Shell.SU.run(("mount -o ro,remount /persist"));
+        }
     }
 
     public void onButtonBuildNowClick(View v) {
@@ -579,7 +698,7 @@ public class MainActivity extends Activity {
                                 new OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
-                                            int which) {
+                                                        int which) {
                                         next.run();
                                     }
                                 }).show();
@@ -609,7 +728,7 @@ public class MainActivity extends Activity {
                                 new OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog,
-                                            int which) {
+                                                        int which) {
                                         next.run();
                                     }
                                 }).show();
@@ -630,19 +749,19 @@ public class MainActivity extends Activity {
     };
 
     private void stopDownload() {
-        final SharedPreferences prefs = PreferenceManager
+        final SharedPreferences Prefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
-        prefs.edit()
+        mPrefs.edit()
                 .putBoolean(
                         UpdateService.PREF_STOP_DOWNLOAD,
-                        !prefs.getBoolean(UpdateService.PREF_STOP_DOWNLOAD,
+                        !mPrefs.getBoolean(UpdateService.PREF_STOP_DOWNLOAD,
                                 false)).commit();
     }
 
     private void requestPermissions() {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         } else {
             mPermOk = true;
@@ -661,5 +780,151 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+    private void checkPersist() {
+        File check = new File("persist/persistFile.txt");
+        if (!check.exists()) {
+            //onButton3NowClick.setText("no persistent FileList found");
+            //bt3.setClickable(false);
+        }
+    }
+
+    private void downloadTxt() {
+
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        try {
+            URL url = new URL("http://android.comtek-wiebe.de/.mix/" + httpList);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+            urlConnection.connect();
+
+            File folder = new File(Environment.getExternalStorageDirectory() + "/RomAddon");
+            boolean success = true;
+            if (!folder.exists()) {
+                Toast.makeText(MainActivity.this, "Directory Does Not Exist, Create It", Toast.LENGTH_SHORT).show();
+                success = folder.mkdir();
+            }
+            if (success) {
+                Toast.makeText(MainActivity.this, "Directory Created", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Failed - Error", Toast.LENGTH_SHORT).show();
+            }
+
+            File sdcard = Environment.getExternalStorageDirectory();
+            File file = new File(sdcard, "RomAddon/" + httpList);
+
+            FileOutputStream fileOutput = new FileOutputStream(file);
+            InputStream inputStream = urlConnection.getInputStream();
+
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+
+            while ((bufferLength = inputStream.read(buffer)) > 0) {
+                fileOutput.write(buffer, 0, bufferLength);
+            }
+            fileOutput.close();
+
+        } catch (MalformedURLException e) {
+            Log.e("RomAddon", e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e("RomAddon", e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void readTxt() {
+
+        final SharedPreferences.Editor mEditor = mPrefs.edit();
+
+        File sdcard = Environment.getExternalStorageDirectory();
+        File file = new File(sdcard, "RomAddon/" + httpList);
+        mEditor.clear();
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            int linenumber = 1;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+                mEditor.putString("url" + String.valueOf(linenumber), line);
+                mEditor.commit();
+                linenumber = linenumber + 1;
+            }
+            br.close();
+        } catch (IOException e) {
+            Log.e("RomAddon", e.getMessage());
+            e.printStackTrace();
+        }
+
+        tv2.setText(text.toString());
+        //et1.setText(text.toString());
+    }
+
+    private void downloadApk() {
+
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+        final SharedPreferences.Editor mEditor = mPrefs.edit();
+
+        try {
+            int inst = 1;
+            READ_URL = mPrefs.getString("url" + String.valueOf(inst), "Keine URL gespeichert");
+            String newurl;
+            while (READ_URL != null) {
+                newurl = mPrefs.getString("url" + String.valueOf(inst), "Keine URL gespeichert");
+                URL url = new URL(newurl);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setDoOutput(true);
+                urlConnection.connect();
+
+                File sdcard = Environment.getExternalStorageDirectory();
+                File file = new File(sdcard, "RomAddon/" + httpPref + String.valueOf(inst) + "name.apk");
+
+                FileOutputStream fileOutput = new FileOutputStream(file);
+                InputStream inputStream = urlConnection.getInputStream();
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.fromFile(new File(sdcard, "RomAddon/" + httpPref + String.valueOf(inst) + "name.apk"));
+                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+
+                byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+
+                while ((bufferLength = inputStream.read(buffer)) > 0) {
+                    fileOutput.write(buffer, 0, bufferLength);
+                }
+                fileOutput.close();
+
+                startActivity(intent);
+                Log.i("RomAddon", "installed");
+                inst = inst + 1;
+            }
+
+        } catch (MalformedURLException e) {
+            Log.e("RomAddon", e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.e("RomAddon", e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+
 }
 

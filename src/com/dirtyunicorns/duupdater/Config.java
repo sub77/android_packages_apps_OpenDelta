@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 import java.io.File;
@@ -43,6 +44,7 @@ public class Config {
         }
         return instance;
     }
+
 
     private final static String PREF_SECURE_MODE_NAME = "secure_mode";
     private final static String PREF_SHOWN_RECOVERY_WARNING_SECURE_NAME = "shown_recovery_warning_secure";
@@ -94,6 +96,7 @@ public class Config {
             Logger.ex(e);
         }
         return null;
+
     }
 
     private Config(Context context) {

@@ -118,4 +118,18 @@
 	<string name="dev_mode_remember_dev_login">Remember</string>
 	<string name="dev_mode_login_wrong_pw">Wrong password</string>
 	<string name="dev_mode_logout_dev_mode">Log out of dev mode?</string>
+
+	<!-- additions for romaddon mode -->
+	<string name="cb1_key">checkbox indicator</string>
+	<string name="cb1">checkboxstring one</string>
+	<string name="tv1"></string>
+	<string name="tv2"></string>
+	<string name="bt1">Download MixPlorer</string>
+	<string name="bt2">Download MixPlorer Addons</string>
+	<string name="bt3">Download Persistent Files</string>
+	<string name="bt4">Get Persistent Template</string>
+	<string name="persistent_title">Persistent FileList</string>
+	<string name="persistent_description2"><![CDATA[Flashing updates in the current mode is only officially supported on <b>TWRP</b> recoveries. <i>Official</i> <b>CWM</b> builds are <i>not</i> supported, though some <i>community-built</i> versions of <b>CWM</b> <i>may</i> still work. Please make sure you are running a compatible recovery before continuing.]]></string>
+	<string name="persistent_description"><![CDATA[1) Edit the template in -><BR>/sdcard/RomAddon/persistTemplateFile.txt <BR> 2) Save the template as -><BR>/sdcard/RomAddon/persistFile.txt <BR> 3) Press UPDATE PERSISTENT FILE]]></string>
+
 </resources>

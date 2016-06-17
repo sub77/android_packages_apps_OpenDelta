@@ -201,7 +201,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+			android:weightSum="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -255,7 +256,7 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                 />
+				android:layout_weight="3.69" />
         </LinearLayout>
     </LinearLayout>
 	<LinearLayout
@@ -264,6 +265,53 @@
 		android:layout_height="0dp"
 		android:layout_weight="1.0"
 		android:orientation="vertical" >
+
+		<Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bt1"
+            android:id="@+id/btn_1"
+            android:layout_below="@+id/TextView2"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:onClick="onButton1NowClick"
+			android:nestedScrollingEnabled="false" />
+		<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/bt2"
+			android:id="@+id/btn_2"
+			android:layout_below="@+id/btn_1"
+			android:layout_centerHorizontal="true"
+			android:clickable="true"
+			android:onClick="onButton2NowClick"
+			android:nestedScrollingEnabled="false" />
+		<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/bt3"
+			android:id="@+id/btn_3"
+			android:layout_below="@+id/btn_2"
+			android:layout_centerHorizontal="true"
+			android:clickable="true"
+			android:onClick="onButton3NowClick"
+			android:nestedScrollingEnabled="false" />
+		<Button
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/bt4"
+			android:id="@+id/btn_4"
+			android:layout_below="@+id/btn_3"
+			android:layout_centerHorizontal="true"
+			android:clickable="true"
+			android:onClick="onButton4NowClick"
+			android:nestedScrollingEnabled="false" />
+		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv2"
+            android:id="@+id/TextView2"
+            android:layout_centerHorizontal="true" />
 	</LinearLayout>
     <LinearLayout
 		android:layout_width="match_parent"
@@ -308,6 +356,7 @@
 			android:text="@string/button_flash_now"
 			android:textAppearance="@android:style/TextAppearance.Material.Button"
 			android:textColor="@color/button_text_color" />
+
 	</LinearLayout>
 
 </LinearLayout>
