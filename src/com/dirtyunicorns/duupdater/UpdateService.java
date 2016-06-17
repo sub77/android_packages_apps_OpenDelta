@@ -24,33 +24,6 @@
 
 package com.dirtyunicorns.duupdater;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
-import java.math.BigInteger;
-import java.net.UnknownHostException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Date;
-import java.net.HttpURLConnection;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -80,6 +53,32 @@ import com.dirtyunicorns.duupdater.DeltaInfo.ProgressListener;
 import com.dirtyunicorns.duupdater.NetworkState.OnNetworkStateListener;
 import com.dirtyunicorns.duupdater.Scheduler.OnWantUpdateCheckListener;
 import com.dirtyunicorns.duupdater.ScreenState.OnScreenStateListener;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 public class UpdateService extends Service implements OnNetworkStateListener,
 OnBatteryStateListener, OnScreenStateListener,
@@ -195,6 +194,8 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
     public static final String PREF_AUTO_DOWNLOAD_CHECK_STRING = String.valueOf(PREF_AUTO_DOWNLOAD_CHECK);
     public static final String PREF_AUTO_DOWNLOAD_DISABLED_STRING = String.valueOf(PREF_AUTO_DOWNLOAD_DISABLED);
+
+    public final static String PREFS_DEV_MODE = "devMode";
 
     private Config config;
 
@@ -876,6 +877,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             return null;
         }
         JSONObject object = null;
+
         try {
             object = new JSONObject(buildData);
             Iterator<String> nextKey = object.keys();
@@ -883,7 +885,12 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             Date latestTimestamp = new Date(0);
             while (nextKey.hasNext()) {
                 String key = nextKey.next();
-                if (key.equals("./" + config.getDevice())) {
+                String DeviceDev = null;
+                if (prefs.getBoolean(PREFS_DEV_MODE, true)) {
+                    DeviceDev = config.getDevice() + "_dev";
+                } else { DeviceDev = config.getDevice();}
+                //if (key.equals("./" + config.getDevice())) {
+                if (key.equals("./" + DeviceDev)) {
                     JSONArray builds = object.getJSONArray(key);
                     for (int i = 0; i < builds.length(); i++) {
                         JSONObject build = builds.getJSONObject(i);
@@ -1395,7 +1402,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     private boolean checkFullBuildMd5Sum(String url, String fn) {
-        String md5Url = url + ".md5";
+        String md5Url = url + ".md5sum";
         String latestFullMd5 = downloadUrlMemoryAsString(md5Url);
         if (latestFullMd5 != null){
             try {
@@ -1662,7 +1669,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     private String getLatestFullMd5Sum(String latestFullFetch) {
-        String md5Url = latestFullFetch + ".md5";
+        String md5Url = latestFullFetch + ".md5sum";
         String latestFullMd5 = downloadUrlMemoryAsString(md5Url);
         if (latestFullMd5 != null){
             try {
