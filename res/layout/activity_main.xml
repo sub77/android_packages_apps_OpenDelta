@@ -89,7 +89,6 @@
 
                 <TextView
                     android:id="@+id/text_last_checked_header"
-                    android:background="@color/bkg_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="2"
