@@ -13,8 +13,10 @@
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@color/title_text_bg"
             android:orientation="horizontal" >
 
             <TextView
@@ -28,168 +30,108 @@
                 android:gravity="start"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
                 android:textColor="@color/title_text_color" />
+
         </LinearLayout>
 
-		<TextView
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools"
-		    android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="vertical"
-            android:elevation="3dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" >
-            </TextView>
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-                <TextView
-                    android:id="@+id/text_current_version_header"
-                    android:background="@color/bkg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="5dp"
-                    android:text="@string/text_current_version_header_title"
-                    android:textSize="15sp"
-                    android:layout_alignParentTop="true"/>
-                <TextView
-                    android:id="@+id/text_current_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textSize="14sp"
-                    android:layout_marginTop="26dp" />
-          </RelativeLayout>
-
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="vertical"
-            android:elevation="3dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" >
-            </TextView>
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:id="@+id/text_last_checked_header"
-                    android:background="@color/bkg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="5dp"
-                    android:text="@string/text_last_checked_header_title"
-                    android:textSize="15dp"
-                    android:layout_alignParentTop="true"/>
-                
-                <TextView
-                    android:id="@+id/text_last_checked"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textSize="14dp"
-                    android:layout_marginTop="26dp" />
-            </RelativeLayout>
-
-        <!-- A CardView that contains a TextView -->
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="vertical"
-            android:elevation="3dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" >
-            </TextView>
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-       
-                <TextView
-                    android:id="@+id/text_update_version_header"
-                    android:background="@color/bkg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="5dp"
-                    android:text="@string/text_update_version_title"
-                    android:textSize="15dp"
-                    android:layout_alignParentTop="true"/>
-        
-                <TextView
-                    android:id="@+id/text_update_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textSize="14dp"
-                    android:layout_marginTop="26dp" />
-            </RelativeLayout>
-
-        <!-- A CardView that contains a TextView -->
-        <TextView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:orientation="vertical"
-            android:elevation="3dp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin" >
-            </TextView>
         <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:id="@+id/text_current_version_header"
+                android:background="@color/bkg_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:text="@string/text_current_version_header_title"
+                android:textSize="15dp"
+                android:layout_alignParentTop="true"/>
+            <TextView
+                android:id="@+id/text_current_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="10dp"
+                android:textSize="14dp"
+                android:layout_marginTop="26dp" />
+        </RelativeLayout>
 
-               <TextView
-                    android:id="@+id/text_download_size_header"
-                    android:background="@color/bkg_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="15dp"
-                    android:maxLines="2"
-                    android:padding="5dp"
-                    android:text="@string/text_download_size_header_title"
-                    android:layout_alignParentTop="true"/>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-                <TextView
-                    android:id="@+id/text_download_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:padding="10dp"
-                    android:textSize="14dp"
-                    android:layout_marginTop="26dp" />
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/text_last_checked_header"
+                android:background="@color/bkg_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:text="@string/text_last_checked_header_title"
+                android:textSize="15dp"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:id="@+id/text_last_checked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="10dp"
+                android:textSize="14dp"
+                android:layout_marginTop="26dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+
+            <TextView
+                android:id="@+id/text_update_version_header"
+                android:background="@color/bkg_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:text="@string/text_update_version_title"
+                android:textSize="15dp"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:id="@+id/text_update_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="10dp"
+                android:textSize="14dp"
+                android:layout_marginTop="26dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/text_download_size_header"
+                android:background="@color/bkg_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:maxLines="2"
+                android:padding="5dp"
+                android:text="@string/text_download_size_header_title"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:id="@+id/text_download_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:padding="10dp"
+                android:textSize="14dp"
+                android:layout_marginTop="26dp" />
+        </RelativeLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -217,8 +159,8 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="middle"
                         android:maxLines="1"
-                        android:textSize="14dp"                        
-                         />
+                        android:textSize="14dp"
+                        />
 
                     <ProgressBar
                         android:id="@+id/progress_bar"
@@ -248,60 +190,60 @@
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="8dp"
-                 />
+                />
         </LinearLayout>
     </LinearLayout>
-	<LinearLayout
-		android:id="@+id/filler"
-		android:layout_width="match_parent"
-		android:layout_height="0dp"
-		android:layout_weight="1.0"
-		android:orientation="vertical" >
-	</LinearLayout>
     <LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="bottom|end"
-		android:orientation="horizontal"
-		android:paddingLeft="@dimen/activity_horizontal_margin"
-		android:paddingRight="@dimen/activity_horizontal_margin" >
+        android:id="@+id/filler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:orientation="vertical" >
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom|end"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin" >
 
-		<Button
-			android:id="@+id/button_check_now"
-			android:layout_width="wrap_content"
-			android:layout_height="48dp"
-			android:background="?android:attr/selectableItemBackground"
-			android:onClick="onButtonCheckNowClick"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:text="@string/button_check_now"
-			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
+        <Button
+            android:id="@+id/button_check_now"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onButtonCheckNowClick"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/button_check_now"
+            android:textAppearance="@android:style/TextAppearance.Material.Button"
+            android:textColor="@color/button_text_color" />
 
-		<Button
-			android:id="@+id/button_build_delta"
-			android:layout_width="wrap_content"
-			android:layout_height="48dp"
-			android:background="?android:attr/selectableItemBackground"
-			android:onClick="onButtonBuildNowClick"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:text="@string/button_build_delta"
-			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
+        <Button
+            android:id="@+id/button_build_delta"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onButtonBuildNowClick"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/button_build_delta"
+            android:textAppearance="@android:style/TextAppearance.Material.Button"
+            android:textColor="@color/button_text_color" />
 
-		<Button
-			android:id="@+id/button_flash_now"
-			android:layout_width="wrap_content"
-			android:layout_height="48dp"
-			android:background="?android:attr/selectableItemBackground"
-			android:onClick="onButtonFlashNowClick"
-			android:paddingLeft="16dp"
-			android:paddingRight="16dp"
-			android:text="@string/button_flash_now"
-			android:textAppearance="@android:style/TextAppearance.Material.Button"
-			android:textColor="@color/button_text_color" />
-	</LinearLayout>
+        <Button
+            android:id="@+id/button_flash_now"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="onButtonFlashNowClick"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/button_flash_now"
+            android:textAppearance="@android:style/TextAppearance.Material.Button"
+            android:textColor="@color/button_text_color" />
+    </LinearLayout>
 
 </LinearLayout>
 
