@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.dirtyunicorns.duupdater"
 	android:versionCode="10"
-	android:versionName="1.6" >
+	android:versionName="1.7" >
 	<uses-sdk
 		android:minSdkVersion="23"
 		android:targetSdkVersion="23" />
@@ -36,9 +36,9 @@
 				APK needs to be in priv-app for this to work!
 				-->
 				<action android:name="android.settings.SYSTEM_UPDATE_SETTINGS" />
-				<!-- Show in launcher for debugging purposed 
+				<!-- Show in launcher for debugging purposed -->
 				<category android:name="android.intent.category.LAUNCHER" />
-				<action android:name="android.intent.action.MAIN" />-->
+				<action android:name="android.intent.action.MAIN" />
 
 			</intent-filter>
 		</activity>
