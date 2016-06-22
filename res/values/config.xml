@@ -17,16 +17,16 @@
 	<string name="path_base">OpenDelta</string>
 
 	<!-- URL base to find .delta files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base -->
-	<string name="url_base_delta">http://android.comtek-wiebe.de/DirtyUnicorns/.delta/%s/</string>
+	<string name="url_base_delta">http://android.comtek-wiebe.de/DirtyUnicorns/delta/%s/</string>
 
 	<!-- URL base to find .update and .sign files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base -->
-	<string name="url_base_update">http://android.comtek-wiebe.de/DirtyUnicorns/.delta/%s/</string>
+	<string name="url_base_update">http://android.comtek-wiebe.de/DirtyUnicorns/delta/%s/</string>
 
 	<!-- URL base to find the full zip files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base -->
-	<string name="url_base_full">http://android.comtek-wiebe.de/DirtyUnicorns/%s/stable/</string>
+	<string name="url_base_full">http://android.comtek-wiebe.de/DirtyUnicorns/full/%s/</string>
 
 	<!-- URL base to fetch all builds -->
-	<string name="url_base_json">http://android.comtek-wiebe.de/DirtyUnicorns/.json.php"</string>
+	<string name="url_base_json">http://android.comtek-wiebe.de/DirtyUnicorns/full/json.php"</string>
 
 	<!-- Applies whole-file signature delta. Adds one extra delta step. Required if recovery verifies signatures -->
 	<item name="apply_signature" type="bool">false</item>
@@ -57,17 +57,6 @@
 	<string name="official_version_tag">DIRTY-DEEDS</string>
 
 	<!-- dev-mode additions -->
-	<string name="dev_mode_pw">dpr0x</string>
-
-	<!-- URL base to find .delta files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base || for dev mode!-->
-	<string name="url_base_delta_dev">http://android.comtek-wiebe.de/DirtyUnicorns/%s/.delta_dev/</string>
-
-	<!-- URL base to find .update and .sign files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base || for dev mode! -->
-	<string name="url_base_update_dev">http://android.comtek-wiebe.de/DirtyUnicorns/%s/.delta_dev/</string>
-
-	<!-- URL base to find the full zip files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base -->
-	<string name="url_base_full_dev">http://android.comtek-wiebe.de/DirtyUnicorns/%s/testing/</string>
-
-	<string name="url_base_json_dev">http://android.comtek-wiebe.de/DirtyUnicorns/.beta.php"</string>
+	<string name="dev_mode_pw">testing</string>
 
 </resources>

@@ -58,9 +58,6 @@ public class Config {
     private final String url_base_delta;
     private final String url_base_update;
     private final String url_base_full;
-    private final String url_base_delta_dev;
-    private final String url_base_update_dev;
-    private final String url_base_full_dev;
     private final boolean apply_signature;
     private final boolean inject_signature_enable;
     private final String inject_signature_keys;
@@ -69,7 +66,6 @@ public class Config {
     private final boolean keep_screen_on;
     private final String filename_base_prefix;
     private final String url_base_json;
-    private final String url_base_json_dev;
     private final String official_version_tag;
     private final String dev_mode_pw;
 
@@ -107,7 +103,6 @@ public class Config {
                 res.getString(R.string.property_device), "");
         filename_base = String.format(Locale.ENGLISH,
                 res.getString(R.string.filename_base), property_version);
-
         path_base = String.format(Locale.ENGLISH, "%s%s%s%s", Environment
                 .getExternalStorageDirectory().getAbsolutePath(),
                 File.separator, res.getString(R.string.path_base),
@@ -121,13 +116,6 @@ public class Config {
         url_base_full = String.format(Locale.ENGLISH,
                 res.getString(R.string.url_base_full), property_device);
         url_base_json = res.getString(R.string.url_base_json);
-        url_base_delta_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_delta_dev),
-                property_device);
-        url_base_update_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_update_dev),
-                property_device);
-        url_base_full_dev = String.format(Locale.ENGLISH, res.getString(R.string.url_base_full_dev),
-                property_device);
-        url_base_json_dev = res.getString(R.string.url_base_json_dev);
         apply_signature = res.getBoolean(R.bool.apply_signature);
         inject_signature_enable = res
                 .getBoolean(R.bool.inject_signature_enable);
@@ -161,6 +149,7 @@ public class Config {
         Logger.d("filename_base_prefix: %s", filename_base_prefix);
         Logger.d("path_base: %s", path_base);
         Logger.d("path_flash_after_update: %s", path_flash_after_update);
+        Logger.d("url_base_json: %s", url_base_json);
         Logger.d("url_base_delta: %s", url_base_delta);
         Logger.d("url_base_update: %s", url_base_update);
         Logger.d("apply_signature: %d", apply_signature ? 1 : 0);
@@ -183,23 +172,11 @@ public class Config {
         return path_flash_after_update;
     }
 
-    public String getUrlBaseDelta() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_delta_dev;
-        else return url_base_delta;
-    }
+    public String getUrlBaseDelta() { return url_base_delta; }
 
-    public String getUrlBaseUpdate() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_update_dev;
-        else return url_base_update;
-    }
+    public String getUrlBaseUpdate() { return url_base_update; }
 
-    public String getUrlBaseFull() {
-        if(prefs.getBoolean(PREFS_DEV_MODE, false))
-            return url_base_full_dev;
-        else return url_base_full;
-    }
+    public String getUrlBaseFull() { return url_base_full; }
 
     public String getDev_mode_pw(){
         return dev_mode_pw;
