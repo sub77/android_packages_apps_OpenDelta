@@ -9,9 +9,8 @@ buildscript {
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(include: '*.jar', dir: 'libs')
-    compile 'com.android.support:cardview-v7:24.0.0'
-    }
+    compile fileTree(dir: 'libs', include: '*.jar')
+}
 
 android {
     compileSdkVersion 23
@@ -47,7 +46,5 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:cardview-v7:23.0.3'
-    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
-    //compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    compile 'com.android.support:cardview-v7:24.0.0'
 }
