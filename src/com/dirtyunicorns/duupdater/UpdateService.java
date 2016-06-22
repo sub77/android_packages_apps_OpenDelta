@@ -320,12 +320,12 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                 scheduler.alarm(intent.getIntExtra(EXTRA_ALARM_ID, -1));
             } else if (ACTION_NOTIFICATION_DELETED.equals(intent.getAction())) {
                 prefs.edit().putLong(PREF_LAST_SNOOZE_TIME_NAME,
-                        System.currentTimeMillis()).commit();
+                        System.currentTimeMillis()).apply();
                 String lastBuild = prefs.getString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT);
                 if (lastBuild != PREF_READY_FILENAME_DEFAULT) {
                     // only snooze until no newer build is available
                     Logger.i("Snoozing notification for " + lastBuild);
-                    prefs.edit().putString(PREF_SNOOZE_UPDATE_NAME, lastBuild).commit();
+                    prefs.edit().putString(PREF_SNOOZE_UPDATE_NAME, lastBuild).apply();
                 }
             } else if (ACTION_BUILD.equals(intent.getAction())) {
                 if (checkPermissions()) {
@@ -932,15 +932,16 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     private String findZIPOnSD(DeltaInfo.FileFull zip, File base) {
-        //Logger.d("scanning: %s", base.getAbsolutePath());
+        Logger.d("scanning: %s", base.getAbsolutePath());
         File[] list = base.listFiles();
         if (list != null) {
             for (File f : list) {
                 if (!f.isDirectory()
                         && f.getName().endsWith(".zip")
                         && f.getName().startsWith(
-                                config.getFileBaseNamePrefix())) {
-                    Logger.d("checking: %s", f.getAbsolutePath());
+                        config.getFileBaseNamePrefix())) {
+                    //&& f.getName().startsWith("DU_falcon_6.0.1_20160612-2216.v10.3-DIRTY-DEEDS")) {
+                    Logger.d("checking: %s", f.getName());
 
                     boolean ok = (zip.match(
                             f,
@@ -949,9 +950,11 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                                     f.getName())) != null);
                     updateState(STATE_ACTION_SEARCHING, null, null, null, null,
                             null);
-
-                    if (ok)
+                    if (ok) {
+                        Logger.d("check: %s", "check ok");
                         return f.getAbsolutePath();
+                    } else
+                    Logger.d("check: %s", "check not ok", f.getName());
                 }
             }
 
@@ -1387,7 +1390,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
 
         if (downloadUrlFileUnknownSize(url, f, md5Sum)) {
             Logger.d("success");
-            prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
+            prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).apply();
         } else {
             f.delete();
             if (stopDownload) {
@@ -1815,12 +1818,12 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     }
 
     public static void clearState(SharedPreferences prefs) {
-        prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).commit();
-        prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).commit();
-        prefs.edit().putString(PREF_READY_FILENAME_NAME, PREF_READY_FILENAME_DEFAULT).commit();
-        prefs.edit().putLong(PREF_DOWNLOAD_SIZE, -1).commit();
-        prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, false).commit();
-        prefs.edit().putString(PREF_INITIAL_FILE, PREF_READY_FILENAME_DEFAULT).commit();
+        prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).apply();
+        prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).apply();
+        prefs.edit().putString(PREF_READY_FILENAME_NAME, PREF_READY_FILENAME_DEFAULT).apply();
+        prefs.edit().putLong(PREF_DOWNLOAD_SIZE, -1).apply();
+        prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, false).apply();
+        prefs.edit().putString(PREF_INITIAL_FILE, PREF_READY_FILENAME_DEFAULT).apply();
     }
 
     private void shouldShowErrorNotification() {
@@ -1887,7 +1890,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                             config.getUrlBaseFull(),
                             latestFullBuild);
                     Logger.d("latest full build for device " + config.getDevice() + " is " + latestFullFetch);
-                    prefs.edit().putString(PREF_LATEST_FULL_NAME, latestFullBuild).commit();
+                    prefs.edit().putString(PREF_LATEST_FULL_NAME, latestFullBuild).apply();
 
                     // Create a list of deltas to apply to get from our current
                     // version to the latest
@@ -1966,7 +1969,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                                     Logger.d("match found (%s): %s", signedFile ? "delta" : "full", di.getOut().getName());
                                     flashFilename = fn;
                                     last = i;
-                                    prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, signedFile).commit();
+                                    prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, signedFile).apply();
                                     break;
                                 }
                             }
@@ -1987,7 +1990,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                     if (deltas.size() == 0) {
                         // we found a matching zip created from deltas before
                         if (flashFilename != null) {
-                            prefs.edit().putString(PREF_READY_FILENAME_NAME, flashFilename).commit();
+                            prefs.edit().putString(PREF_READY_FILENAME_NAME, flashFilename).apply();
                             return;
                         }
                         // only full download available
@@ -1999,7 +2002,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         downloadFullBuild = updateAvilable;
 
                         if (!updateAvilable) {
-                            prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).commit();
+                            prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).apply();
                         }
 
                         if (downloadFullBuild) {
@@ -2007,7 +2010,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                             if (new File(fn).exists()) {
                                 if (checkFullBuildMd5Sum(latestFullFetch, fn)) {
                                     Logger.d("match found (full): " + fn);
-                                    prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
+                                    prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).apply();
                                     downloadFullBuild = false;
                                 } else {
                                     Logger.d("md5 check failed : " + fn);
@@ -2016,7 +2019,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         }
                         if (updateAvilable ) { //&& downloadFullBuild) {
                             long size = getUrlDownloadSize(latestFullFetch);
-                            prefs.edit().putLong(PREF_DOWNLOAD_SIZE, size).commit();
+                            prefs.edit().putLong(PREF_DOWNLOAD_SIZE, size).apply();
                             Logger.d("BUILD SIZE = " + prefs.getLong(
                         UpdateService.PREF_DOWNLOAD_SIZE, -1));
                         }
@@ -2067,13 +2070,13 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         boolean updateAvilable = fullUpdatePossible || deltaUpdatePossible;
 
                         if (!updateAvilable) {
-                            prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).commit();
-                            prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).commit();
+                            prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).apply();
+                            prefs.edit().putString(PREF_LATEST_FULL_NAME, PREF_READY_FILENAME_DEFAULT).apply();
                         } else {
                             if (downloadFullBuild) {
-                                prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).commit();
+                                prefs.edit().putString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT).apply();
                             } else {
-                                prefs.edit().putString(PREF_LATEST_DELTA_NAME, new File(flashFilename).getName()).commit();
+                                prefs.edit().putString(PREF_LATEST_DELTA_NAME, new File(flashFilename).getName()).apply();
                             }
                         }
 
@@ -2082,7 +2085,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                             if (new File(fn).exists()) {
                                 if (checkFullBuildMd5Sum(latestFullFetch, fn)) {
                                     Logger.d("match found (full): " + fn);
-                                    prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).commit();
+                                    prefs.edit().putString(PREF_READY_FILENAME_NAME, fn).apply();
                                     downloadFullBuild = false;
                                 } else {
                                     Logger.d("md5sum check failed : " + fn);
@@ -2091,9 +2094,9 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         }
                         if (updateAvilable) {
                             if (deltaUpdatePossible) {
-                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, deltaDownloadSize).commit();
+                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, deltaDownloadSize).apply();
                             } else if (downloadFullBuild) {
-                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, fullDownloadSize).commit();
+                                prefs.edit().putLong(PREF_DOWNLOAD_SIZE, fullDownloadSize).apply();
                             }
                         }
                         Logger.d("check donne: latest valid delta update = " + prefs.getString(PREF_LATEST_DELTA_NAME, PREF_READY_FILENAME_DEFAULT) +
@@ -2149,11 +2152,11 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                             // the possibility to do delta updates
                             if (initialFile != null) {
                                 if (initialFile.startsWith(config.getPathBase())) {
-                                    prefs.edit().putString(PREF_INITIAL_FILE, initialFile).commit();
+                                    prefs.edit().putString(PREF_INITIAL_FILE, initialFile).apply();
                                 }
                             }
-                            prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, true).commit();
-                            prefs.edit().putString(PREF_READY_FILENAME_NAME, flashFilename).commit();
+                            prefs.edit().putBoolean(PREF_DELTA_SIGNATURE, true).apply();
+                            prefs.edit().putString(PREF_READY_FILENAME_NAME, flashFilename).apply();
                         }
                     }
                     if (downloadFullBuild && checkOnly == PREF_AUTO_DOWNLOAD_FULL) {
@@ -2169,7 +2172,7 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
                         }
                     }
                 } finally {
-                    prefs.edit().putLong(PREF_LAST_CHECK_TIME_NAME, System.currentTimeMillis()).commit();
+                    prefs.edit().putLong(PREF_LAST_CHECK_TIME_NAME, System.currentTimeMillis()).apply();
                     stopForeground(true);
                     if (wifiLock.isHeld()) wifiLock.release();
                     if (wakeLock.isHeld()) wakeLock.release();
