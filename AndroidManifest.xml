@@ -36,9 +36,9 @@
 				APK needs to be in priv-app for this to work!
 				-->
 				<action android:name="android.settings.SYSTEM_UPDATE_SETTINGS" />
-				<!-- Show in launcher for debugging purposed -->
+				<!-- Show in launcher for debugging purposed
 				<category android:name="android.intent.category.LAUNCHER" />
-				<action android:name="android.intent.action.MAIN" />
+				<action android:name="android.intent.action.MAIN" />-->
 
 			</intent-filter>
 		</activity>
