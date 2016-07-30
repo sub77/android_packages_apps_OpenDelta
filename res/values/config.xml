@@ -54,7 +54,7 @@
 		<item>i777</item>
 	</string-array>
 
-	<string name="official_version_tag">DIRTY-DEEDS</string>
+	<string name="official_version_tag">DEEDS</string>
 
 	<!-- dev-mode additions -->
 	<string name="dev_mode_pw">testing</string>

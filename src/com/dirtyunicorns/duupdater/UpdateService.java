@@ -885,12 +885,12 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
             Date latestTimestamp = new Date(0);
             while (nextKey.hasNext()) {
                 String key = nextKey.next();
-                String DeviceDev = null;
-                if (prefs.getBoolean(PREFS_DEV_MODE, true)) {
-                    DeviceDev = config.getDevice() + "_dev";
-                } else { DeviceDev = config.getDevice();}
-                //if (key.equals("./" + config.getDevice())) {
-                if (key.equals("./" + DeviceDev)) {
+                //String DeviceDev = null;
+                //if (prefs.getBoolean(PREFS_DEV_MODE, true)) {
+                //    DeviceDev = config.getDevice() + "_dev";
+                //} else { DeviceDev = config.getDevice();}
+                if (key.equals("./" + config.getDevice())) {
+                //if (key.equals("./" + DeviceDev)) {
                     JSONArray builds = object.getJSONArray(key);
                     for (int i = 0; i < builds.length(); i++) {
                         JSONObject build = builds.getJSONObject(i);
