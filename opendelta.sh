@@ -17,7 +17,7 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/and
+HOME=/and/roms
 RR=android/generic/resurrection-6.0
 OP2=android/oneplus2/rr-6.0
 DU=du
@@ -28,6 +28,7 @@ BIN_XDELTA=$HOME/$DU/delta/xdelta3
 BIN_ZIPADJUST=$HOME/$DU/delta/zipadjust
 
 FILE_MATCH=DU_*.zip
+FILE_MATCH2=DU_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
 PATH_LAST=$HOME/$DU/delta/last/$DEVICE
 
@@ -40,7 +41,15 @@ getFileName() {
 	echo ${1##*/}
 }
 
+getFileName2() {
+	echo ${1##*/}
+}
+
 getFileNameNoExt() {
+	echo ${1%.*}
+}
+
+getFileName2NoExt() {
 	echo ${1%.*}
 }
 
@@ -66,8 +75,14 @@ nextPowerOf2() {
 }
 
 FILE_CURRENT=$(getFileName $(ls -1 $PATH_CURRENT/$FILE_MATCH))
+FILE_CURRENT2=$(getFileName2 $(ls -1 $PATH_CURRENT/$FILE_MATCH2))
+
 FILE_LAST=$(getFileName $(ls -1 $PATH_LAST/$FILE_MATCH))
+FILE_LAST2=$(getFileName2 $(ls -1 $PATH_LAST/$FILE_MATCH2))
+
 FILE_LAST_BASE=$(getFileNameNoExt $FILE_LAST)
+FILE_LAST_BASE2=$(getFileName2NoExt $FILE_LAST2)
+
 
 if [ "$FILE_CURRENT" == "" ]; then
 	echo "Abort: CURRENT zip not found" >&2
@@ -78,6 +93,7 @@ if [ "$FILE_LAST" == "" ]; then
 	echo "Abort: LAST zip not found" >&2
 	mkdir -p $PATH_LAST
 	cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
+	cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
 	exit 0
 fi
 
@@ -168,11 +184,20 @@ mkdir publish >/dev/null 2>/dev/null
 mkdir publish/$DEVICE >/dev/null 2>/dev/null
 cp out/* publish/$DEVICE/.
 
+cp out/* /mnt/edu/DirtyUnicorns/delta/$DEVICE/.
+
 rm -rf work
 rm -rf out
 
 rm -rf $PATH_LAST/*
 mkdir -p $PATH_LAST
 cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
+cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
+
+cp $PATH_CURRENT/$FILE_CURRENT /mnt/edu/DirtyUnicorns/full/$DEVICE/$FILE_CURRENT
+cp $PATH_CURRENT/$FILE_CURRENT2 /mnt/edu/DirtyUnicorns/full/$DEVICE/$FILE_CURRENT2
+
+
+
 
 exit 0
