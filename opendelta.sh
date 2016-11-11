@@ -17,23 +17,21 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/and/roms
-RR=android/generic/resurrection-6.0
-OP2=android/oneplus2/rr-6.0
-DU=du
+HOME=/
+DU=du-ncaf
 
 BIN_JAVA=java
-BIN_MINSIGNAPK=$HOME/$DU/delta/minsignapk.jar
-BIN_XDELTA=$HOME/$DU/delta/xdelta3
-BIN_ZIPADJUST=$HOME/$DU/delta/zipadjust
+BIN_MINSIGNAPK=$HOME/$DU/opendelta/delta/minsignapk.jar
+BIN_XDELTA=$HOME/$DU/opendelta/delta/xdelta3
+BIN_ZIPADJUST=$HOME/$DU/opendelta/delta/zipadjust
 
-FILE_MATCH=DU_*.zip
-FILE_MATCH2=DU_*.md5sum
+FILE_MATCH=DU-OMS_*.zip
+FILE_MATCH2=DU-OMS_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
 PATH_LAST=$HOME/$DU/delta/last/$DEVICE
 
-KEY_X509=$HOME/$DU/delta/certs/platform.x509.pem
-KEY_PK8=$HOME/$DU/delta/certs/platform.pk8
+KEY_X509=$HOME/$DU/opendelta/certs/platform.x509.pem
+KEY_PK8=$HOME/$DU/opendelta/certs/platform.pk8
 
 # ------ PROCESS ------
 
@@ -184,6 +182,7 @@ mkdir publish >/dev/null 2>/dev/null
 mkdir publish/$DEVICE >/dev/null 2>/dev/null
 cp out/* publish/$DEVICE/.
 
+mount /mnt/edu
 cp out/* /mnt/edu/DirtyUnicorns/delta/$DEVICE/.
 
 rm -rf work
