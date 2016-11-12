@@ -17,8 +17,8 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/
-DU=du-ncaf
+HOME=/and1
+DU=du7
 
 BIN_JAVA=java
 BIN_MINSIGNAPK=$HOME/$DU/opendelta/delta/minsignapk.jar
