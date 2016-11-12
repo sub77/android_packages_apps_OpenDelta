@@ -3,6 +3,7 @@ include $(CLEAR_VARS)
 
 LOCAL_PACKAGE_NAME := OpenDelta
 LOCAL_MODULE_TAGS := optional
+LOCAL_AAPT_FLAGS += --rename-manifest-package com.dirtyunicorns.duupdater2
 LOCAL_PRIVILEGED_MODULE := true
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
