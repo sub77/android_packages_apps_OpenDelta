@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.dirtyunicorns.duupdater;
+package com.dirtyunicorns.duupdater2;
 
 import java.io.File;
 import java.text.DateFormatSymbols;
@@ -80,7 +80,6 @@ public class SettingsActivity extends PreferenceActivity implements
     private Preference mSchedulerDailyTime;
     private Preference mCleanFiles;
     private ListPreference mScheduleWeekDay;
-    private CheckBoxPreference mBetaMode;
 
     @Override
     public void onPause() {
@@ -146,7 +145,6 @@ public class SettingsActivity extends PreferenceActivity implements
         mScheduleWeekDay.setOnPreferenceChangeListener(this);
         mScheduleWeekDay.setEnabled(schedulerMode.equals(PREF_SCHEDULER_MODE_WEEKLY));
 
-        mBetaMode = (CheckBoxPreference) findPreference(PREF_TESTING_MODE);
 
     }
 
@@ -168,10 +166,6 @@ public class SettingsActivity extends PreferenceActivity implements
 
         if (preference == mNetworksConfig) {
             showNetworks();
-            return true;
-        } else if (preference == mBetaMode) {
-            boolean value = ((CheckBoxPreference) preference).isChecked();
-            mBetaMode.setEnabled(!value);
             return true;
         } else if (preference == mChargeOnly) {
             boolean value = ((CheckBoxPreference) preference).isChecked();

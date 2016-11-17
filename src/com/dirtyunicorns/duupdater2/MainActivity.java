@@ -22,16 +22,12 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.dirtyunicorns.duupdater;
-
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+package com.dirtyunicorns.duupdater2;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,9 +46,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends Activity {
     private TextView title = null;
@@ -69,6 +73,13 @@ public class MainActivity extends Activity {
     private TextView downloadSize = null;
     private Config config;
     private boolean mPermOk;
+
+    private boolean rememberDevLogin;
+    private boolean isDevMode;
+
+    private MenuItem menuItemDevMode;
+
+    private SharedPreferences mPrefs;
 
     private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
@@ -108,12 +119,95 @@ public class MainActivity extends Activity {
         config = Config.getInstance(this);
         mPermOk = false;
         requestPermissions();
+
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        rememberDevLogin = mPrefs.getBoolean(Config.PREFS_REMEMBER_LOGIN, false);
+        isDevMode = mPrefs.getBoolean(Config.PREFS_DEV_MODE, false);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+
+        menuItemDevMode = menu.findItem(R.id.action_dev_mode);
+
+        if(rememberDevLogin) {
+            menuItemDevMode.setTitle(getString(R.string.action_dev_mode_on));
+            menuItemDevMode.setChecked(true);
+        }
+
         return true;
+    }
+
+    private void showDevLogin(){
+        final Dialog loginDialog =  new Dialog(this);
+        loginDialog.setContentView(R.layout.dialog_login);
+        loginDialog.setTitle(getString(R.string.dev_mode_login));
+
+        final SharedPreferences.Editor mEditor = mPrefs.edit();
+
+        final String devModePw = config.getDev_mode_pw();
+
+        Button btnLogin = (Button)loginDialog.findViewById(R.id.btnLogin);
+        Button btnCancel = (Button)loginDialog.findViewById(R.id.btnCancel);
+        final EditText etPassword = (EditText)loginDialog.findViewById(R.id.txtPassword);
+        final CheckBox cbRemember = (CheckBox)loginDialog.findViewById(R.id.remember_dev_login);
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(etPassword.getText().toString().equals(devModePw)){
+                    mEditor.putBoolean(Config.PREFS_DEV_MODE, true).apply();
+                    isDevMode = true;
+
+                    if(cbRemember.isChecked()) {
+                        mEditor.putBoolean(Config.PREFS_REMEMBER_LOGIN, true).apply();
+                        rememberDevLogin = true;
+                    }
+
+                    menuItemDevMode.setChecked(true);
+                    menuItemDevMode.setTitle(getString(R.string.action_dev_mode_on));
+
+                    Toast.makeText(MainActivity.this, getString(R.string.action_dev_mode_on), Toast.LENGTH_SHORT).show();
+
+                    loginDialog.dismiss();
+                }
+                else
+                    Toast.makeText(MainActivity.this, getString(R.string.dev_mode_login_wrong_pw), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginDialog.dismiss();
+            }
+        });
+
+
+        loginDialog.show();
+    }
+
+    private void showDevLogout(){
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.dev_mode_logout_dev_mode))
+                .setNegativeButton(getString(R.string.dev_mode_login_logout_cancel), null)
+                .setPositiveButton(getString(R.string.dev_mode_logout), new OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SharedPreferences.Editor mEditor = mPrefs.edit();
+
+                        mEditor.putBoolean(Config.PREFS_DEV_MODE, false)
+                                .putBoolean(Config.PREFS_REMEMBER_LOGIN, false).apply();
+
+                        isDevMode = false;
+                        rememberDevLogin = false;
+
+                        menuItemDevMode.setTitle(getString(R.string.action_dev_mode))
+                                .setChecked(false);
+                    }
+                }).show();
     }
 
     private void showAbout() {
@@ -147,6 +241,11 @@ public class MainActivity extends Activity {
             Intent settingsActivity = new Intent(this, SettingsActivity.class);
             startActivity(settingsActivity);
             return true;
+            case R.id.action_dev_mode:
+                if(!isDevMode)
+                    showDevLogin();
+                else showDevLogout();
+                return true;
         case R.id.action_about:
             showAbout();
             return true;

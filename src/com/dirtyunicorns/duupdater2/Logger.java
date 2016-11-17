@@ -19,7 +19,7 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.dirtyunicorns.duupdater;
+package com.dirtyunicorns.duupdater2;
 
 import java.util.Locale;
 

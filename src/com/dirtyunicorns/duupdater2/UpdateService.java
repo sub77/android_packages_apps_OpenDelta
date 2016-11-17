@@ -22,7 +22,7 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.dirtyunicorns.duupdater;
+package com.dirtyunicorns.duupdater2;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -48,11 +48,11 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
-import com.dirtyunicorns.duupdater.BatteryState.OnBatteryStateListener;
-import com.dirtyunicorns.duupdater.DeltaInfo.ProgressListener;
-import com.dirtyunicorns.duupdater.NetworkState.OnNetworkStateListener;
-import com.dirtyunicorns.duupdater.Scheduler.OnWantUpdateCheckListener;
-import com.dirtyunicorns.duupdater.ScreenState.OnScreenStateListener;
+import com.dirtyunicorns.duupdater2.BatteryState.OnBatteryStateListener;
+import com.dirtyunicorns.duupdater2.DeltaInfo.ProgressListener;
+import com.dirtyunicorns.duupdater2.NetworkState.OnNetworkStateListener;
+import com.dirtyunicorns.duupdater2.Scheduler.OnWantUpdateCheckListener;
+import com.dirtyunicorns.duupdater2.ScreenState.OnScreenStateListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,14 +123,14 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String PERMISSION_ACCESS_CACHE_FILESYSTEM = "android.permission.ACCESS_CACHE_FILESYSTEM";
     public static final String PERMISSION_REBOOT = "android.permission.REBOOT";
 
-    public static final String BROADCAST_INTENT = "com.dirtyunicorns.duupdater.intent.BROADCAST_STATE";
-    public static final String EXTRA_STATE = "com.dirtyunicorns.duupdater.extra.ACTION_STATE";
-    public static final String EXTRA_LAST_CHECK = "com.dirtyunicorns.duupdater.extra.LAST_CHECK";
-    public static final String EXTRA_PROGRESS = "com.dirtyunicorns.duupdater.extra.PROGRESS";
-    public static final String EXTRA_CURRENT = "com.dirtyunicorns.duupdater.extra.CURRENT";
-    public static final String EXTRA_TOTAL = "com.dirtyunicorns.duupdater.extra.TOTAL";
-    public static final String EXTRA_FILENAME = "com.dirtyunicorns.duupdater.extra.FILENAME";
-    public static final String EXTRA_MS = "com.dirtyunicorns.duupdater.extra.MS";
+    public static final String BROADCAST_INTENT = "com.dirtyunicorns.duupdater2.intent.BROADCAST_STATE";
+    public static final String EXTRA_STATE = "com.dirtyunicorns.duupdater2.extra.ACTION_STATE";
+    public static final String EXTRA_LAST_CHECK = "com.dirtyunicorns.duupdater2.extra.LAST_CHECK";
+    public static final String EXTRA_PROGRESS = "com.dirtyunicorns.duupdater2.extra.PROGRESS";
+    public static final String EXTRA_CURRENT = "com.dirtyunicorns.duupdater2.extra.CURRENT";
+    public static final String EXTRA_TOTAL = "com.dirtyunicorns.duupdater2.extra.TOTAL";
+    public static final String EXTRA_FILENAME = "com.dirtyunicorns.duupdater2.extra.FILENAME";
+    public static final String EXTRA_MS = "com.dirtyunicorns.duupdater2.extra.MS";
 
     public static final String STATE_ACTION_NONE = "action_none";
     public static final String STATE_ACTION_CHECKING = "action_checking";
@@ -151,13 +151,13 @@ OnWantUpdateCheckListener, OnSharedPreferenceChangeListener {
     public static final String STATE_ERROR_PERMISSIONS = "error_permissions";
     public static final String STATE_ERROR_FLASH = "error_flash";
 
-    private static final String ACTION_CHECK = "com.dirtyunicorns.duupdater.action.CHECK";
-    private static final String ACTION_FLASH = "com.dirtyunicorns.duupdater.action.FLASH";
-    private static final String ACTION_ALARM = "com.dirtyunicorns.duupdater.action.ALARM";
-    private static final String EXTRA_ALARM_ID = "com.dirtyunicorns.duupdater.extra.ALARM_ID";
-    private static final String ACTION_NOTIFICATION_DELETED = "com.dirtyunicorns.duupdater.action.NOTIFICATION_DELETED";
-    private static final String ACTION_BUILD = "com.dirtyunicorns.duupdater.action.BUILD";
-    private static final String ACTION_UPDATE = "com.dirtyunicorns.duupdater.action.UPDATE";
+    private static final String ACTION_CHECK = "com.dirtyunicorns.duupdater2.action.CHECK";
+    private static final String ACTION_FLASH = "com.dirtyunicorns.duupdater2.action.FLASH";
+    private static final String ACTION_ALARM = "com.dirtyunicorns.duupdater2.action.ALARM";
+    private static final String EXTRA_ALARM_ID = "com.dirtyunicorns.duupdater2.extra.ALARM_ID";
+    private static final String ACTION_NOTIFICATION_DELETED = "com.dirtyunicorns.duupdater2.action.NOTIFICATION_DELETED";
+    private static final String ACTION_BUILD = "com.dirtyunicorns.duupdater2.action.BUILD";
+    private static final String ACTION_UPDATE = "com.dirtyunicorns.duupdater2.action.UPDATE";
 
     private static final int NOTIFICATION_BUSY = 1;
     private static final int NOTIFICATION_UPDATE = 2;

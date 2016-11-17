@@ -1,4 +1,4 @@
-package com.dirtyunicorns.duupdater;
+package com.dirtyunicorns.duupdater2;
 
 import android.app.Activity;
 import android.os.Bundle;

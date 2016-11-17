@@ -19,12 +19,15 @@
  * along with OpenDelta. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.dirtyunicorns.duupdater;
+package com.dirtyunicorns.duupdater2;
 
-public class Application extends android.app.Application {
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+
+public class BootCompleteReceiver extends BroadcastReceiver {
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Logger.setDebugLogging(getResources().getBoolean(R.bool.debug_output));
+    public void onReceive(Context context, Intent intent) {
+        UpdateService.start(context);
     }
 }
