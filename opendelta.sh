@@ -17,7 +17,7 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/and1
+HOME=/1and
 DU=du7
 
 BIN_JAVA=java
@@ -29,6 +29,9 @@ FILE_MATCH=DU-OMS_*.zip
 FILE_MATCH2=DU-OMS_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
 PATH_LAST=$HOME/$DU/delta/last/$DEVICE
+
+PATH_UPLOAD_DELTA=/mnt/ftp/$DEVICE/DirtyUnicorns/delta
+PATH_UPLOAD_FULL=/mnt/ftp/$DEVICE/DirtyUnicorns/full
 
 KEY_X509=$HOME/$DU/opendelta/certs/platform.x509.pem
 KEY_PK8=$HOME/$DU/opendelta/certs/platform.pk8
@@ -182,8 +185,10 @@ mkdir publish >/dev/null 2>/dev/null
 mkdir publish/$DEVICE >/dev/null 2>/dev/null
 cp out/* publish/$DEVICE/.
 
-mount /mnt/edu
-cp out/* /mnt/edu/DirtyUnicorns/delta/$DEVICE/.
+#mount /mnt/edu
+#cp out/* /mnt/edu/DirtyUnicorns/delta/$DEVICE/.
+
+cp out/* $PATH_UPLOAD_DELTA/
 
 rm -rf work
 rm -rf out
@@ -193,8 +198,8 @@ mkdir -p $PATH_LAST
 cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
 cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
 
-cp $PATH_CURRENT/$FILE_CURRENT /mnt/edu/DirtyUnicorns/full/$DEVICE/$FILE_CURRENT
-cp $PATH_CURRENT/$FILE_CURRENT2 /mnt/edu/DirtyUnicorns/full/$DEVICE/$FILE_CURRENT2
+cp $PATH_CURRENT/$FILE_CURRENT $PATH_UPLOAD_FULL/$FILE_CURRENT
+cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_UPLOAD_FULL/$FILE_CURRENT2
 
 
 
