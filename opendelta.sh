@@ -20,6 +20,12 @@ fi
 HOME=/1and
 DU=du7
 
+USERNAME="ftp_sub77@android.comtek-wiebe.de"
+PASSWORD="sub772015"
+SERVER="ftp.strato.de"
+VERBOSE="-v"
+ROM="DirtyUnicorns"
+
 BIN_JAVA=java
 BIN_MINSIGNAPK=$HOME/$DU/opendelta/delta/minsignapk.jar
 BIN_XDELTA=$HOME/$DU/opendelta/delta/xdelta3
@@ -29,9 +35,6 @@ FILE_MATCH=DU-OMS_*.zip
 FILE_MATCH2=DU-OMS_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
 PATH_LAST=$HOME/$DU/opendelta/last/$DEVICE
-
-PATH_UPLOAD_DELTA=/mnt/ftp/$DEVICE/DirtyUnicorns/delta
-PATH_UPLOAD_FULL=/mnt/ftp/$DEVICE/DirtyUnicorns/full
 
 KEY_X509=$HOME/$DU/opendelta/certs/platform.x509.pem
 KEY_PK8=$HOME/$DU/opendelta/certs/platform.pk8
@@ -185,23 +188,29 @@ mkdir publish >/dev/null 2>/dev/null
 mkdir publish/$DEVICE >/dev/null 2>/dev/null
 cp out/* publish/$DEVICE/.
 
-#mount /mnt/edu
-#cp out/* /mnt/edu/DirtyUnicorns/delta/$DEVICE/.
-
-cp out/* $PATH_UPLOAD_DELTA/
-
-rm -rf work
-rm -rf out
-
 rm -rf $PATH_LAST/*
 mkdir -p $PATH_LAST
+
 cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
 cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
 
-cp $PATH_CURRENT/$FILE_CURRENT $PATH_UPLOAD_FULL/$FILE_CURRENT
-cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_UPLOAD_FULL/$FILE_CURRENT2
+# Directory where file is located
+DIR_DELTA="/$ROM/delta/$DEVICE/"
+FILE_DELTA1="$HOME/$DU/opendelta/out/*.delta"
+FILE_DELTA2="$HOME/$DU/opendelta/out/*.sign"
+FILE_DELTA3="$HOME/$DU/opendelta/out/*.update"
 
+DIR_FULL="/$ROM/full/$DEVICE/"
+FILE_FULL_MD5="$PATH_LAST/$FILE_MATCH2"
+FILE_FULL_ZIP="$PATH_LAST/$FILE_MATCH"
 
+curl $VERBOSE -T $FILE_DELTA1 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
+curl $VERBOSE -T $FILE_DELTA2 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
+curl $VERBOSE -T $FILE_DELTA3 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
+curl $VERBOSE -T $FILE_FULL_MD5 -u $USERNAME:$PASSWORD $SERVER/$DIR_FULL
+curl $VERBOSE -T $FILE_FULL_ZIP -u $USERNAME:$PASSWORD $SERVER/$DI
 
+rm -rf work
+rm -rf out
 
 exit 0
