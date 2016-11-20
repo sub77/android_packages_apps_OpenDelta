@@ -28,7 +28,7 @@ BIN_ZIPADJUST=$HOME/$DU/opendelta/delta/zipadjust
 FILE_MATCH=DU-OMS_*.zip
 FILE_MATCH2=DU-OMS_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
-PATH_LAST=$HOME/$DU/delta/last/$DEVICE
+PATH_LAST=$HOME/$DU/opendelta/last/$DEVICE
 
 PATH_UPLOAD_DELTA=/mnt/ftp/$DEVICE/DirtyUnicorns/delta
 PATH_UPLOAD_FULL=/mnt/ftp/$DEVICE/DirtyUnicorns/full
