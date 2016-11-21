@@ -18,26 +18,26 @@ fi
 # ------ CONFIGURATION ------
 
 HOME=/1and
-DU=du7
-
-USERNAME="ftp_sub77@android.comtek-wiebe.de"
-PASSWORD="sub772015"
-SERVER="ftp.strato.de"
-VERBOSE="-v"
+OPENDELTA=opendelta
+DU=du
+USERNAME="sub77.s"
+PASSWORD="sx1r0x"
+SERVER="basketbuild.com"
 ROM="DirtyUnicorns"
+#VERBOSE="-v"
 
 BIN_JAVA=java
-BIN_MINSIGNAPK=$HOME/$DU/opendelta/delta/minsignapk.jar
-BIN_XDELTA=$HOME/$DU/opendelta/delta/xdelta3
-BIN_ZIPADJUST=$HOME/$DU/opendelta/delta/zipadjust
+BIN_MINSIGNAPK=$HOME/$DU/$OPENDELTA/delta/minsignapk.jar
+BIN_XDELTA=$HOME/$DU/$OPENDELTA/delta/xdelta3
+BIN_ZIPADJUST=$HOME/$DU/$OPENDELTA/delta/zipadjust
 
 FILE_MATCH=DU-OMS_*.zip
 FILE_MATCH2=DU-OMS_*.md5sum
 PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
-PATH_LAST=$HOME/$DU/opendelta/last/$DEVICE
+PATH_LAST=$HOME/$DU/$OPENDELTA/last/$DEVICE
 
-KEY_X509=$HOME/$DU/opendelta/certs/platform.x509.pem
-KEY_PK8=$HOME/$DU/opendelta/certs/platform.pk8
+KEY_X509=$HOME/$DU/$OPENDELTA/certs/platform.x509.pem
+KEY_PK8=$HOME/$DU/$OPENDELTA/certs/platform.pk8
 
 # ------ PROCESS ------
 
@@ -196,9 +196,9 @@ cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
 
 # Directory where file is located
 DIR_DELTA="/$ROM/delta/$DEVICE/"
-FILE_DELTA1="$HOME/$DU/opendelta/out/*.delta"
-FILE_DELTA2="$HOME/$DU/opendelta/out/*.sign"
-FILE_DELTA3="$HOME/$DU/opendelta/out/*.update"
+FILE_DELTA1="$HOME/$DU/$OPENDELTA/out/*.delta"
+FILE_DELTA2="$HOME/$DU/$OPENDELTA/out/*.sign"
+FILE_DELTA3="$HOME/$DU/$OPENDELTA/out/*.update"
 
 DIR_FULL="/$ROM/full/$DEVICE/"
 FILE_FULL_MD5="$PATH_LAST/$FILE_MATCH2"
