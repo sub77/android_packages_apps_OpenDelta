@@ -5,10 +5,10 @@
 	<item name="debug_output" type="bool">true</item>
 
 	<!-- Property to read for ROM version -->
-	<string name="property_version">ro.du.version</string>
+	<string name="property_version">ro.cos.version</string>
 
 	<!-- Property to read for device identifier -->
-	<string name="property_device">ro.du.device</string>
+	<string name="property_device">ro.cos.device</string>
 
 	<!-- %s is expanded to property_version value. .zip, .delta, .update, .sign extensions added when needed -->
 	<string name="filename_base">%s</string>
