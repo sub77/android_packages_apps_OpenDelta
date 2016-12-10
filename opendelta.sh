@@ -17,9 +17,9 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/1and
+HOME=/roms
 OPENDELTA=opendelta
-DU=du
+DU=dunx
 USERNAME="sub77.s"
 PASSWORD="sx1r0x"
 SERVER="basketbuild.com"
