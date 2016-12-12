@@ -22,7 +22,7 @@
 	<application
 		android:name="com.dirtyunicorns.duupdater.Application"
 		android:allowBackup="false"
-		android:icon="@mipmap/omnirom_logo"
+		android:icon="@mipmap/ic_launcher"
 		android:label="@string/app_name" >
 		<activity
 			android:name="com.dirtyunicorns.duupdater.MainActivity"
