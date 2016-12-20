@@ -5,65 +5,70 @@
 # Get device either from $DEVICE set by calling script, or first parameter
 
 if [ "$DEVICE" == "" ]; then
-	if [ "$1" != "" ]; then
-		DEVICE=$1
-	fi
+    if [ "$1" != "" ]; then
+        DEVICE=$1
+    fi
 fi
 
 if [ "$DEVICE" == "" ]; then
-	echo "Abort: no device set" >&2
-	exit 1
+    echo "Abort: no device set" >&2
+    exit 1
 fi
 
 # ------ CONFIGURATION ------
 
-HOME=/3and
+HOME=/2and
+ROMBASE=omni
 OPENDELTA=opendelta
-DU=du
+FILEMASK="omni-"
 USERNAME="sub77.s"
 PASSWORD="sx1r0x"
 SERVER="basketbuild.com"
-ROM="DirtyUnicorns"
+ROM="OmniRom"
+
+# FTP Directory where file is located
+DIR_DELTA="/$ROM/.delta/$DEVICE/"
+DIR_FULL="/$ROM/$DEVICE/"
 #VERBOSE="-v"
 
 BIN_JAVA=java
-BIN_MINSIGNAPK=$HOME/$DU/$OPENDELTA/delta/minsignapk.jar
-BIN_XDELTA=$HOME/$DU/$OPENDELTA/delta/xdelta3
-BIN_ZIPADJUST=$HOME/$DU/$OPENDELTA/delta/zipadjust
+BIN_MINSIGNAPK=$HOME/$ROMBASE/$OPENDELTA/delta/minsignapk.jar
+BIN_XDELTA=$HOME/$ROMBASE/$OPENDELTA/delta/xdelta3
+BIN_ZIPADJUST=$HOME/$ROMBASE/$OPENDELTA/delta/zipadjust
 
-FILE_MATCH=DU_*.zip
-FILE_MATCH2=DU_*.md5sum
-PATH_CURRENT=$HOME/$DU/out/target/product/$DEVICE
-PATH_LAST=$HOME/$DU/$OPENDELTA/last/$DEVICE
+FILE_MATCH=$FILEMASK*.zip
+FILE_MATCH2=$FILEMASK*.md5sum
+PATH_CURRENT=$HOME/$ROMBASE/out/target/product/$DEVICE
+PATH_LAST=$HOME/$ROMBASE/$OPENDELTA/last/$DEVICE
 
-KEY_X509=$HOME/$DU/$OPENDELTA/certs/platform.x509.pem
-KEY_PK8=$HOME/$DU/$OPENDELTA/certs/platform.pk8
+KEY_X509=$HOME/$ROMBASE/$OPENDELTA/certs/platform.x509.pem
+KEY_PK8=$HOME/$ROMBASE/$OPENDELTA/certs/platform.pk8
 
 # ------ PROCESS ------
 
 getFileName() {
-	echo ${1##*/}
+    echo ${1##*/}
 }
 
 getFileName2() {
-	echo ${1##*/}
+    echo ${1##*/}
 }
 
 getFileNameNoExt() {
-	echo ${1%.*}
+    echo ${1%.*}
 }
 
 getFileName2NoExt() {
-	echo ${1%.*}
+    echo ${1%.*}
 }
 
 getFileMD5() {
-	TEMP=$(md5sum -b $1)
-	for T in $TEMP; do echo $T; break; done
+    TEMP=$(md5sum -b $1)
+    for T in $TEMP; do echo $T; break; done
 }
 
 getFileSize() {
-	echo $(stat --print "%s" $1)
+    echo $(stat --print "%s" $1)
 }
 
 nextPowerOf2() {
@@ -89,21 +94,21 @@ FILE_LAST_BASE2=$(getFileName2NoExt $FILE_LAST2)
 
 
 if [ "$FILE_CURRENT" == "" ]; then
-	echo "Abort: CURRENT zip not found" >&2
-	exit 1
+    echo "Abort: CURRENT zip not found" >&2
+    exit 1
 fi
 
 if [ "$FILE_LAST" == "" ]; then
-	echo "Abort: LAST zip not found" >&2
-	mkdir -p $PATH_LAST
-	cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
-	cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
-	exit 0
+    echo "Abort: LAST zip not found" >&2
+    mkdir -p $PATH_LAST
+    cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
+    cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
+    exit 0
 fi
 
 if [ "$FILE_LAST" == "$FILE_CURRENT" ]; then
-	echo "Abort: CURRENT and LAST zip have the same name" >&2
-	exit 1
+    echo "Abort: CURRENT and LAST zip have the same name" >&2
+    exit 1
 fi
 
 rm -rf work
@@ -194,13 +199,11 @@ mkdir -p $PATH_LAST
 cp $PATH_CURRENT/$FILE_CURRENT $PATH_LAST/$FILE_CURRENT
 cp $PATH_CURRENT/$FILE_CURRENT2 $PATH_LAST/$FILE_CURRENT2
 
-# Directory where file is located
-DIR_DELTA="/$ROM/delta/$DEVICE/"
-FILE_DELTA1="$HOME/$DU/$OPENDELTA/out/*.delta"
-FILE_DELTA2="$HOME/$DU/$OPENDELTA/out/*.sign"
-FILE_DELTA3="$HOME/$DU/$OPENDELTA/out/*.update"
+FILE_DELTA1="$HOME/$ROMBASE/$OPENDELTA/out/*.delta"
+FILE_DELTA2="$HOME/$ROMBASE/$OPENDELTA/out/*.sign"
+FILE_DELTA3="$HOME/$ROMBASE/$OPENDELTA/out/*.update"
 
-DIR_FULL="/$ROM/full/$DEVICE/"
+
 FILE_FULL_MD5="$PATH_LAST/$FILE_MATCH2"
 FILE_FULL_ZIP="$PATH_LAST/$FILE_MATCH"
 
@@ -208,7 +211,7 @@ curl $VERBOSE -T $FILE_DELTA1 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
 curl $VERBOSE -T $FILE_DELTA2 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
 curl $VERBOSE -T $FILE_DELTA3 -u $USERNAME:$PASSWORD $SERVER/$DIR_DELTA
 curl $VERBOSE -T $FILE_FULL_MD5 -u $USERNAME:$PASSWORD $SERVER/$DIR_FULL
-curl $VERBOSE -T $FILE_FULL_ZIP -u $USERNAME:$PASSWORD $SERVER/$DI
+curl $VERBOSE -T $FILE_FULL_ZIP -u $USERNAME:$PASSWORD $SERVER/$DIR_FULL
 
 rm -rf work
 rm -rf out
