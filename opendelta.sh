@@ -17,8 +17,8 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/2and
-ROMBASE=omni
+HOME=/4and
+ROMBASE=OmniROM
 OPENDELTA=opendelta
 FILEMASK="omni-"
 USERNAME="sub77.s"
