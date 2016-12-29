@@ -17,21 +17,21 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/2and
-ROMBASE=omni
+HOME=/3and
+ROMBASE=du
 OPENDELTA=opendelta
-FILEMASK="omni-"
+FILEMASK="DU_"
 USERNAME1="sub77.s"
 PASSWORD1="sx1r0x"
 SERVER1="ftp.basketbuild.com"
 USERNAME2="sub77"
 PASSWORD2="xtAyTOsbkMpe"
 SERVER2="ftp://uploads.androidfilehost.com"
-ROM="OmniRom"
+ROM="DirtyUnicorns"
 
 # FTP Directory where file is located
-DIR_DELTA="$ROM/.delta/$DEVICE/"
-DIR_FULL="/$ROM/$DEVICE/"
+DIR_DELTA="$ROM/delta/$DEVICE/"
+DIR_FULL="/$ROM/full/$DEVICE/"
 #VERBOSE="-v"
 #TESTMODE=1
 
