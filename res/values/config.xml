@@ -14,7 +14,7 @@
 	<string name="filename_base">%s</string>
 
 	<!-- Path deltas are stored, relative to sdcard root -->
-	<string name="path_base">OpenDelta</string>
+	<string name="path_base">DirtyDelta</string>
 
 	<!-- URL base to find .delta files, %s is expanded to property_device value. Path is suffixed by (expanded) filename_base -->
 	<string name="url_base_delta">https://basketbuild.com/uploads/devs/sub77/DirtyUnicorns/delta/%s/</string>
@@ -54,7 +54,7 @@
 		<item>i777</item>
 	</string-array>
 
-	<string name="official_version_tag">DEEDS</string>
+	<string name="official_version_tag">UNOFFICIAL</string>
 
 	<!-- dev-mode additions -->
 	<string name="dev_mode_pw">testing</string>
