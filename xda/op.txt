@@ -1,0 +1,38 @@
+[B]Images[/B]
+[QUOTE]
+[IMG]http://forum.xda-developers.com/attachment.php?attachmentid=3974865&stc=1&d=1482261393[/IMG] 
+
+[*] [URL="http://forum.xda-developers.com/devdb/project/?id=18432#screenshots"] screenshots [/URL]
+
+[/QUOTE]
+
+
+[B]Features[/B]
+[QUOTE]
+[*] substratum / oms
+
+[*] snapdragon camera
+
+[*] snapdragon llvm
+
+[*] opendelta ota
+[/QUOTE]
+
+[B]Not working[/B]
+[QUOTE]
+[*] msim
+[/QUOTE]
+
+[B]Download[/B]
+[QUOTE]
+[*] [URL="https://www.androidfilehost.com/?w=files&flid=137468"] ROM - AFH [/URL]
+
+[*] [URL="https://basketbuild.com/devs/sub77/OmniRom/falcon"] ROM - BASKETBUILD [/URL]
+
+
+[*] [URL="http://opengapps.org"] GAPPS [/URL]
+
+[*] [URL="https://download.chainfire.eu/supersu"] SUPERSU [/URL]
+
+[*] [URL="https://omnirom.org"] OMNIROM [/URL]
+[/QUOTE]
