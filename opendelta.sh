@@ -17,7 +17,7 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/4and
+HOME=/roms
 ROMBASE=OmniROM
 OPENDELTA=opendelta
 FILEMASK="omni-"
@@ -27,7 +27,7 @@ SERVER1="ftp.basketbuild.com"
 USERNAME2="sub77"
 PASSWORD2="xtAyTOsbkMpe"
 SERVER2="ftp://uploads.androidfilehost.com"
-ROM="OmniRom"
+ROM="OmniROM"
 
 # FTP Directory where file is located
 DIR_DELTA="$ROM/.delta/$DEVICE/"
@@ -214,6 +214,9 @@ FILE_DELTA3="$HOME/$ROMBASE/$OPENDELTA/publish/$DEVICE/*.update"
 FILE_FULL_MD5="$PATH_LAST/$FILE_MATCH2"
 FILE_FULL_ZIP="$PATH_LAST/$FILE_MATCH"
 
+export XDA_FILE_FULL_MD5=$FILE_MATCH2
+export XDA_FILE_FULL_ZIP=$FILE_MATCH
+
 curl $VERBOSE -T $FILE_DELTA1 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
 curl $VERBOSE -T $FILE_DELTA2 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
 curl $VERBOSE -T $FILE_DELTA3 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
@@ -230,5 +233,7 @@ rm $FILE_DELTA3
 
 rm -rf work
 rm -rf out
+
+echo $XDA_FILE_FULL_ZIP
 
 exit 0
