@@ -17,17 +17,48 @@ fi
 
 # ------ CONFIGURATION ------
 
-HOME=/roms
-ROMBASE=OmniROM
-OPENDELTA=opendelta
-FILEMASK="omni-"
-USERNAME1="sub77.s"
-PASSWORD1="sx1r0x"
+HOME="/roms"
+ROMBASE="OmniROM"
+
 SERVER1="ftp.basketbuild.com"
-USERNAME2="sub77"
-PASSWORD2="xtAyTOsbkMpe"
 SERVER2="ftp://uploads.androidfilehost.com"
+FILEMASK="omni-"
 ROM="OmniROM"
+OPENDELTA="opendelta"
+
+my_rc_file=~/.xdarc
+
+my_account1="AFH FTP Login"
+my_account2="BB FTP Login"
+#my_account3="XDA Forum Login"
+
+if [ ! -f ${my_rc_file} ]; then touch ${my_rc_file}; chmod 600 ${my_rc_file}; else source ${my_rc_file}; fi
+
+if [ -n "$my_account1" ] ; then
+    if [[ ! -n "$my_login1" || ! -n "$my_passw1" ]] ; then
+        echo -e "$my_account1"
+        read -p "Username:" my_login1
+        read -p "Password:" my_passw1
+            if [ -n "$my_login1" ] && [ -n "$my_passw1" ] ; then echo -e "my_login1=$my_login1\nmy_passw1=$my_passw1" >> ${my_rc_file} ; echo "USERDATA written to ${my_rc_file}"; else echo "ERROR. no data written!"; fi
+    fi
+fi
+if [ -n "$my_account2" ] ; then
+    if [[ ! -n "$my_login2" || ! -n "$my_passw2" ]] ; then
+        echo -e "$my_account2"
+        read -p "Username:" my_login2
+        read -p "Password:" my_passw2
+            if [ -n "$my_login2" ] && [ -n "$my_passw2" ] ; then echo -e "my_login2=$my_login2\nmy_passw2=$my_passw2" >> ${my_rc_file} ; echo "USERDATA written to ${my_rc_file}"; else echo "ERROR. no data written!"; fi
+    fi
+fi
+if [ -n "$my_account3" ] ; then
+    if [[ ! -n "$my_login3" || ! -n "$my_passw3" ]] ; then
+    echo -e "\e[1;38;5;81m"$my_account3"\e[0m"
+    read -p "Username:" my_login3
+    read -p "Password:" my_passw3
+        if [ -n "$my_login3" ] && [ -n "$my_login3" ] ; then echo -e "my_login3=$my_login3\nmy_passw3=$my_passw3" >> ${my_rc_file} ; echo "USERDATA written to ${my_rc_file}"; else echo "ERROR. no data written!"; fi
+    fi
+fi
+
 
 # FTP Directory where file is located
 DIR_DELTA="$ROM/.delta/$DEVICE/"
@@ -214,18 +245,15 @@ FILE_DELTA3="$HOME/$ROMBASE/$OPENDELTA/publish/$DEVICE/*.update"
 FILE_FULL_MD5="$PATH_LAST/$FILE_MATCH2"
 FILE_FULL_ZIP="$PATH_LAST/$FILE_MATCH"
 
-export XDA_FILE_FULL_MD5=$FILE_MATCH2
-export XDA_FILE_FULL_ZIP=$FILE_MATCH
+curl $VERBOSE -T $FILE_DELTA1 -u $my_login2:$my_passw2 $SERVER1/$DIR_DELTA
+curl $VERBOSE -T $FILE_DELTA2 -u $my_login2:$my_passw2 $SERVER1/$DIR_DELTA
+curl $VERBOSE -T $FILE_DELTA3 -u $my_login2:$my_passw2 $SERVER1/$DIR_DELTA
 
-curl $VERBOSE -T $FILE_DELTA1 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
-curl $VERBOSE -T $FILE_DELTA2 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
-curl $VERBOSE -T $FILE_DELTA3 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_DELTA
+curl $VERBOSE -T $FILE_FULL_MD5 -u $my_login2:$my_passw2 $SERVER1/$DIR_FULL
+curl $VERBOSE -T $FILE_FULL_ZIP -u $my_login2:$my_passw2 $SERVER1/$DIR_FULL
 
-curl $VERBOSE -T $FILE_FULL_MD5 -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_FULL
-curl $VERBOSE -T $FILE_FULL_ZIP -u $USERNAME1:$PASSWORD1 $SERVER1/$DIR_FULL
-
-curl $VERBOSE -T $FILE_FULL_MD5 -u $USERNAME2:$PASSWORD2 $SERVER2/
-curl $VERBOSE -T $FILE_FULL_ZIP -u $USERNAME2:$PASSWORD2 $SERVER2/
+curl $VERBOSE -T $FILE_FULL_MD5 -u $my_login1:$my_passw1 $SERVER2/
+curl $VERBOSE -T $FILE_FULL_ZIP -u $my_login1:$my_passw1 $SERVER2/
 
 rm $FILE_DELTA1
 rm $FILE_DELTA2
@@ -234,6 +262,7 @@ rm $FILE_DELTA3
 rm -rf work
 rm -rf out
 
-echo $XDA_FILE_FULL_ZIP
+echo "$FILE_CURRENT"
+echo "$FILE_CURRENT2"
 
 exit 0
